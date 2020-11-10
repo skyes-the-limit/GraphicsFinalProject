@@ -1,6 +1,7 @@
 const up = [0, 1, 0]
 let target = [0, 0, 0]
-let lookAt = true
+let lookAt = false
+let cameraMoveMouse = true;
 let fieldOfViewRadians = m4.degToRad(60)
 
 let gl;
@@ -51,18 +52,41 @@ function onTextChange() {
     if (key === 13 & !textSubmitted) {
         textSubmitted = true;
 
-        let canvas = document.getElementById("canvas"); 
+        let canvas = document.getElementById("canvas");
         let input = document.getElementById("input");
         let textarea = document.getElementById("textArea");
 
         canvas.style["opacity"] = 1;
-        input.style["opacity"] = 0.25; 
-        input.style["user-select"] = "none"; 
-        input.style["-moz-user-select"] = "none"; 
-        input.style["-khtml-user-select"] = "none"; 
-        input.style["-webkit-user-select"] = "none"; 
-        input.style["-o-user-select"] = "none"; 
+        input.style["opacity"] = 0.25;
+        input.style["user-select"] = "none";
+        input.style["-moz-user-select"] = "none";
+        input.style["-khtml-user-select"] = "none";
+        input.style["-webkit-user-select"] = "none";
+        input.style["-o-user-select"] = "none";
         textarea.setAttribute("disabled", "true");
+
+
+        // Bind motion when text is entered
+        document.addEventListener(
+            'keydown',
+            webglUtils.moveCameraKeyboard,
+            false
+        )
+
+        document.addEventListener(
+            'mousemove',
+            webglUtils.moveCameraMouse,
+            false
+        )
+
+        document.addEventListener(
+            'click',
+            (event) => {cameraMoveMouse = !cameraMoveMouse;
+            },
+            false
+        )
+
+
     }
 }
 
@@ -73,6 +97,9 @@ const init = () => {
     // resize the canvas to fill browser window dynamically
     window.addEventListener('resize', resizeCanvas, false);
     resizeCanvas();
+
+
+
 
     gl = canvas.getContext("webgl");
 
@@ -236,4 +263,6 @@ const render = () => {
         })
     })
 }
+
+
 

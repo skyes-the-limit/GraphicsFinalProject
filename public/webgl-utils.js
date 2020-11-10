@@ -94,51 +94,39 @@ const webglUtils = {
     lightSource[index] = parseFloat(event.target.value)
     render()
   },
-  moveCamera: (event, direction) => {
+  moveCameraKeyboard: (event, direction) => {
     const step = 5;
-    const s = step * Math.sin(m4.degToRad(camera.rotation.y));
-    const c = step * Math.cos(m4.degToRad(camera.rotation.y));
+    // const s = step * Math.sin(m4.degToRad(camera.rotation.y));
+    // const c = step * Math.cos(m4.degToRad(camera.rotation.y));
 
-    if (event.key) {
-      if (event.key === "w") direction = "move-forward";
-      if (event.key === "a") direction = "move-left";
-      if (event.key === "s") direction = "move-backward";
-      if (event.key === "d") direction = "move-right";
-      if (event.key === "q") direction = "turn-left";
-      if (event.key === "e") direction = "turn-right";
-    }
-
-    switch (direction) {
-      case "move-forward":
-        camera.translation.z -= step;
-        document.getElementById("ctz").value = camera.translation.z
-        render();
+    switch (event.key) {
+      case ("w"):
+        camera.rotation.x -= step;
         break;
-      case "move-backward":
-        camera.translation.z += step;
-        document.getElementById("ctz").value = camera.translation.z
-        render();
-        break;
-      case "move-left":
-        camera.translation.x -= step;
-        document.getElementById("ctx").value = camera.translation.x
-        render();
-        break;
-      case "move-right":
-        camera.translation.x += step;
-        document.getElementById("ctx").value = camera.translation.x
-        render();
-        break;
-      case "turn-left":
+      case ("a"):
         camera.rotation.y += step;
-        document.getElementById("cry").value = camera.rotation.y
-        render();
         break;
-      case "turn-right":
+      case ("s"):
+        camera.rotation.x += step;
+        break;
+      case ("d"):
         camera.rotation.y -= step;
-        document.getElementById("cry").value = camera.rotation.y
-        render();
         break;
+      case ("q"):
+
+        camera.rotation.z += step;
+        break;
+      case ("e"):
+        camera.rotation.z -= step;
+        break;
+    }
+    render();
+  },
+  moveCameraMouse: (event) => {
+    if (cameraMoveMouse) {
+      camera.rotation.y -= event.movementX / 5;
+      camera.rotation.x += event.movementY / 5;
+      render();
     }
   },
   addShape: (newShape, type) => {

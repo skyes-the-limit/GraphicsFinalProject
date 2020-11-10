@@ -24,8 +24,8 @@ const sizeOne = {width: 1, height: 1, depth: 1}
 // }
 // In order to have appropriate view, flip each thing. We were given in uninverted coordinates
 let camera = {
-  translation: {x: 45, y: 35, z: -21},
-  rotation: {x: 40, y: 235, z: 0}
+  translation: {x: 0, y: 0, z: 0},
+  rotation: {x: 0, y: 180, z: 0}
 }
 //
 // let camera = {
@@ -91,7 +91,7 @@ let shapes = [
     position: origin,
     dimensions: sizeOne,
     color: BLUE_RGB,
-    translation: {x: 0, y: 0, z: 0},
+    translation: {x: 0, y: 0, z: 50},
     scale: {x: 0.5, y: 0.5, z: 0.5},
     rotation: {x: 0, y: 0, z: 0},
   },
@@ -100,7 +100,7 @@ let shapes = [
     position: origin,
     dimensions: sizeOne,
     color: GREEN_RGB,
-    translation: {x: 20, y: 0, z: 0},
+    translation: {x: 20, y: 0, z: 50},
     scale: {x: 0.5, y: 0.5, z: 0.5},
     rotation: {x: 0, y: 0, z: 0},
   },
@@ -109,7 +109,7 @@ let shapes = [
     position: origin,
     dimensions: sizeOne,
     color: RED_RGB,
-    translation: {x: -20, y: 0, z: 0},
+    translation: {x: -20, y: 0, z: 50},
     scale: {x: 0.5, y: 0.5, z: 0.5},
     rotation: {x: 0, y: 0, z: 0}
   },
