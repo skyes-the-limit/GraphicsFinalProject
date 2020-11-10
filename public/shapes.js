@@ -14,6 +14,7 @@ const LETTER_F = "LETTER_F"
 const STAR = "STAR"
 const CIRCLE = "CIRCLE"
 const CUBE = "CUBE"
+const PYRAMID = "PYRAMID"
 const origin = {x: 0, y: 0, z: 0}
 const sizeOne = {width: 1, height: 1, depth: 1}
 
@@ -110,6 +111,15 @@ let shapes = [
     dimensions: sizeOne,
     color: RED_RGB,
     translation: {x: -20, y: 0, z: 50},
+    scale: {x: 0.5, y: 0.5, z: 0.5},
+    rotation: {x: 0, y: 0, z: 0}
+  },
+  {
+    type: PYRAMID,
+    position: origin,
+    dimensions: sizeOne,
+    color: PURPLE_RGB,
+    translation: {x: -40, y: 0, z: 50},
     scale: {x: 0.5, y: 0.5, z: 0.5},
     rotation: {x: 0, y: 0, z: 0}
   },

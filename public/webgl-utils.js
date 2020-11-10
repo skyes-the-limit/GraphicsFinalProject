@@ -244,6 +244,55 @@ const webglUtils = {
 
     gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
   },
+
+  renderPyramidLighting: (pyramid) => {
+    let geometry = [
+      //Square Face
+      0.0, 0.0, 0.0,
+      0.0, 0.0, -30.0,
+      30.0, 0.0, -30.0,
+      0.0, 0.0, 0.0,
+      30.0, 0.0, -30.0,
+      30.0, 0.0, 0.0,
+
+
+      //Triangle Face1
+      0.0, 0.0, 0.0,
+      30.0, 0.0, 0.0,
+      15, 30.0, -15, //top vertex point
+
+      //Triangle Face2
+      30.0, 0.0, 0.0,
+      30.0, 0.0, -30.0,
+      15, 30.0, -15, //top vertex point
+
+      //Triangle Face3
+      30.0, 0.0, -30.0,
+      0.0, 0.0, -30.0,
+      15, 30.0, -15, //top vertex point
+
+      //Triangle Face4
+      0.0, 0.0, -30.0,
+      0.0, 0.0, 0.0,
+      15, 30.0, -15, //top vertex point
+    ]
+    geometry = new Float32Array(geometry)
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferCoords);
+    gl.bufferData(gl.ARRAY_BUFFER, geometry, gl.STATIC_DRAW)
+
+    var normals = new Float32Array([
+      0,0, 1,  0,0, 1,  0,0, 1,    0,0, 1,  0,0, 1,  0,0, 1,
+      0,0,-1,  0,0,-1,  0,0,-1,    0,0,-1,  0,0,-1,  0,0,-1,
+      0,-1,0,  0,-1,0,  0,-1,0,    0,-1,0,  0,-1,0,  0,-1,0,
+      0, 1,0,  0, 1,0,  0, 1,0,    0, 1,0,  0, 1,0,  0, 1,0,
+      -1, 0,0, -1, 0,0, -1, 0,0,   -1, 0,0, -1, 0,0, -1, 0,0,
+      1, 0,0,  1, 0,0,  1, 0,0,    1, 0,0,  1, 0,0,  1 ,0,0,
+    ]);
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 18);
+  },
   renderRectangle: (rectangle) => {
     const x1 = rectangle.position.x
         - rectangle.dimensions.width / 2;

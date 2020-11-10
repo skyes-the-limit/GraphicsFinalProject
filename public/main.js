@@ -247,6 +247,7 @@ const render = () => {
 
         const $shapeList = $("#object-list")
         $shapeList.empty()
+
         shapes.forEach((shape, index) => {
 
             if (shape.type === RECTANGLE) {
@@ -259,6 +260,8 @@ const render = () => {
                 webglUtils.renderStar(shape);
             } else if (shape.type == CUBE) {
                 webglUtils.renderCubeLighting(shape);
+            } else if(shape.type === PYRAMID) {
+                webglUtils.renderPyramidLighting(shape)
             }
         })
     })
