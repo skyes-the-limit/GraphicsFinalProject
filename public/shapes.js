@@ -155,6 +155,8 @@ let shapes = [
     dimensions: sizeOne,
     color: RED_RGB,
     translation: {x: -20, y: 0, z: -50},
+    scale: {x: 0.5, y: 0.5, z: 0.5},
+    rotation: {x: 0, y: 0, z: 0}
   },
   // {
   //   type: LETTER_F,
