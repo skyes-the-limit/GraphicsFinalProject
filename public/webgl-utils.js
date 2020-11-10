@@ -118,6 +118,11 @@ const webglUtils = {
       case ("e"):
         camera.rotation.z += step;
         break;
+      case (" "):
+        camera.rotation.x = defaultCamera.rotation.x;
+        camera.rotation.y = defaultCamera.rotation.y;
+        camera.rotation.z = defaultCamera.rotation.z;
+        break;
     }
     const xStrength = Math.sin(webglUtils.degToRad(camera.rotation.y));
     const yStrength = Math.sin(webglUtils.degToRad(-camera.rotation.x));

@@ -27,6 +27,10 @@ let camera = {
   translation: {x: 0, y: 0, z: 0},
   rotation: {x: 0, y: 180, z: 0}
 }
+let defaultCamera = {
+  translation: {x: 0, y: 0, z: 0},
+  rotation: {x: 0, y: 180, z: 0}
+}
 //
 // let camera = {
 //   translation: {x: 0, y: 0, z: 5},
