@@ -2,7 +2,7 @@ const up = [0, 1, 0]
 let target = [0, 0, 0]
 let lookAt = false
 let cameraMoveMouse = true;
-let fieldOfViewRadians = m4.degToRad(60)
+let fieldOfViewRadians = m4.degToRad(90)
 
 let gl;
 let attributeCoords;

@@ -128,6 +128,10 @@ const webglUtils = {
       camera.rotation.x += event.movementY / 5;
       render();
     }
+    const xStrength = Math.sin(webglUtils.degToRad(camera.rotation.y));
+    const yStrength = Math.sin(webglUtils.degToRad(-camera.rotation.x));
+    const zStrength = -Math.cos(webglUtils.degToRad(camera.rotation.y + -camera.rotation.x));
+    lightSource = [xStrength, yStrength, zStrength];
   },
   addShape: (newShape, type) => {
     const colorHex = document.getElementById("color").value
@@ -244,6 +248,7 @@ const webglUtils = {
 
     gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
   },
+
 
   renderPyramidLighting: (pyramid) => {
     let geometry = [

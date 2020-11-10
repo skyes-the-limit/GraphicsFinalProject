@@ -18,7 +18,6 @@ const PYRAMID = "PYRAMID"
 const origin = {x: 0, y: 0, z: 0}
 const sizeOne = {width: 1, height: 1, depth: 1}
 
-
 // let camera = {
 //   translation: {x: -45, y: -35, z: 21},
 //   rotation: {x: 40, y: 235, z: 0}
@@ -34,10 +33,10 @@ let camera = {
 //   rotation: {x: 0, y: 0, z: 0}
 // }
 
-
 // In order to have light source look right, must change
 // let lightSource = [0.4, 0.3, 0.5]
-let lightSource = [0.4, -0.3, 0.2]
+// let lightSource = [0.4, -0.3, 0.2]
+let lightSource = [0, 0, 1]
 
 let shapes = [
   // {
@@ -122,6 +121,40 @@ let shapes = [
     translation: {x: -40, y: 0, z: 50},
     scale: {x: 0.5, y: 0.5, z: 0.5},
     rotation: {x: 0, y: 0, z: 0}
+  },
+  {
+    type: CUBE,
+    position: origin,
+    dimensions: sizeOne,
+    color: RED_RGB,
+    translation: {x: -20, y: 50, z: 50},
+    scale: {x: 0.5, y: 0.5, z: 0.5},
+    rotation: {x: 0, y: 0, z: 0}
+  },
+  {
+    type: CUBE,
+    position: origin,
+    dimensions: sizeOne,
+    color: RED_RGB,
+    translation: {x: -20, y: -50, z: 50},
+    scale: {x: 0.5, y: 0.5, z: 0.5},
+    rotation: {x: 0, y: 0, z: 0}
+  },
+  {
+    type: CUBE,
+    position: origin,
+    dimensions: sizeOne,
+    color: RED_RGB,
+    translation: {x: -20, y: -50, z: 50},
+    scale: {x: 0.5, y: 0.5, z: 0.5},
+    rotation: {x: 0, y: 0, z: 0}
+  },
+  {
+    type: CUBE,
+    position: origin,
+    dimensions: sizeOne,
+    color: RED_RGB,
+    translation: {x: -20, y: 0, z: -50},
   },
   // {
   //   type: LETTER_F,
