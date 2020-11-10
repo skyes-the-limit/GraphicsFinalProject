@@ -113,13 +113,16 @@ const webglUtils = {
         camera.rotation.y -= step;
         break;
       case ("q"):
-
-        camera.rotation.z += step;
-        break;
-      case ("e"):
         camera.rotation.z -= step;
         break;
+      case ("e"):
+        camera.rotation.z += step;
+        break;
     }
+    const xStrength = Math.sin(webglUtils.degToRad(camera.rotation.y));
+    const yStrength = Math.sin(webglUtils.degToRad(-camera.rotation.x));
+    const zStrength = -Math.cos(webglUtils.degToRad(camera.rotation.y + -camera.rotation.x));
+    lightSource = [xStrength, yStrength, zStrength];
     render();
   },
   moveCameraMouse: (event) => {
