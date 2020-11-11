@@ -272,6 +272,7 @@ const render = () => {
                     break;
                 case DIAMOND:
                     webglUtils.renderDiamondLighting(shape);
+                    break;
                 default:
                     break;
             }
