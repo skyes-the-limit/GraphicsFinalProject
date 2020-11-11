@@ -51,11 +51,10 @@ function onTextChange() {
     // If the user has pressed enter for the first time
     if (key === 13 & !textSubmitted) {
         textSubmitted = true;
-
         let canvas = document.getElementById("canvas");
         let input = document.getElementById("input");
         let textarea = document.getElementById("textArea");
-
+        $('#myform').submit();
         canvas.style["opacity"] = 1;
         input.style["opacity"] = 0.25;
         input.style["user-select"] = "none";

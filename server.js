@@ -14,9 +14,8 @@ const toneAnalyzer = new ToneAnalyzerV3({
     //https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/5942acc2-d420-4bfc-96b0-5684b5ae65d1
 });
 
-
-app.get('/myaction', function(req, res) {
-    text1 = req.query.textArea;
+app.post('/myaction', function(req, res) {
+    text1 = req.body.textArea;
     toneAnalyzer.tone(
         {
             toneInput: text1,
