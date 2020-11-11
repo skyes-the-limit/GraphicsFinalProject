@@ -248,22 +248,34 @@ const render = () => {
         const $shapeList = $("#object-list")
         $shapeList.empty()
 
+
         shapes.forEach((shape, index) => {
 
-            if (shape.type === RECTANGLE) {
-                webglUtils.renderRectangle(shape)
-            } else if (shape.type === TRIANGLE) {
-                webglUtils.renderTriangle(shape)
-            } else if (shape.type === CIRCLE) {
-                webglUtils.renderCircle(shape);
-            } else if (shape.type == STAR) {
-                webglUtils.renderStar(shape);
-            } else if (shape.type == CUBE) {
-                webglUtils.renderCubeLighting(shape);
-            } else if(shape.type === PYRAMID) {
-                webglUtils.renderPyramidLighting(shape)
+            gl.uniform4f(uniformColor,
+                shape.color.red,
+                shape.color.green,
+                shape.color.blue, 1);
+
+            // Set the matrix
+
+            let M = computeModelViewMatrix(shape, viewProjectionMatrix)
+            gl.uniformMatrix4fv(uniformMatrix, false, M)
+            M = computeModelViewMatrix(shape, worldViewProjectionMatrix)
+            gl.uniformMatrix4fv(uniformWorldViewProjection, false, M)
+
+            switch(shape.type) {
+                case CUBE:
+                    webglUtils.renderCubeLighting(shape);
+                    break;
+                case PYRAMID:
+                    webglUtils.renderPyramidLighting(shape);
+                    break;
+                case DIAMOND:
+                    webglUtils.renderDiamondLighting(shape);
+                default:
+                    break;
             }
-        })
+         })
     })
 }
 
