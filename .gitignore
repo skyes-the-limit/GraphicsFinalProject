@@ -1,5 +1,5 @@
 # ignore libraries
-node_modules
+
 
 # ignore build files
 build
