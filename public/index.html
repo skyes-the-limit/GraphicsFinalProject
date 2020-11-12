@@ -11,14 +11,13 @@
 	</style>
 </head>
 
-<body onload="init();render()">
-<form action="/myaction" method="GET">
+<body onload="init();render();">
+<form action="/myaction" id="myform" method="POST">
 	<div>
 		<canvas id="canvas"></canvas>
 		<div id="input">
 			<h1>How're you feeling today?</h1>
 			<textarea id="textArea" name="textArea" onkeypress="onTextChange();"></textarea>
-			<button type="submit">Submit</button>
 		</div>
 	</div>
 </form>

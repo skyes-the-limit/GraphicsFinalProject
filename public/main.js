@@ -51,11 +51,10 @@ function onTextChange() {
     // If the user has pressed enter for the first time
     if (key === 13 & !textSubmitted) {
         textSubmitted = true;
-
         let canvas = document.getElementById("canvas");
         let input = document.getElementById("input");
         let textarea = document.getElementById("textArea");
-
+        $('#myform').submit();
         canvas.style["opacity"] = 1;
         input.style["opacity"] = 0.25;
         input.style["user-select"] = "none";
@@ -248,22 +247,35 @@ const render = () => {
         const $shapeList = $("#object-list")
         $shapeList.empty()
 
+
         shapes.forEach((shape, index) => {
 
-            if (shape.type === RECTANGLE) {
-                webglUtils.renderRectangle(shape)
-            } else if (shape.type === TRIANGLE) {
-                webglUtils.renderTriangle(shape)
-            } else if (shape.type === CIRCLE) {
-                webglUtils.renderCircle(shape);
-            } else if (shape.type == STAR) {
-                webglUtils.renderStar(shape);
-            } else if (shape.type == CUBE) {
-                webglUtils.renderCubeLighting(shape);
-            } else if(shape.type === PYRAMID) {
-                webglUtils.renderPyramidLighting(shape)
+            gl.uniform4f(uniformColor,
+                shape.color.red,
+                shape.color.green,
+                shape.color.blue, 1);
+
+            // Set the matrix
+
+            let M = computeModelViewMatrix(shape, viewProjectionMatrix)
+            gl.uniformMatrix4fv(uniformMatrix, false, M)
+            M = computeModelViewMatrix(shape, worldViewProjectionMatrix)
+            gl.uniformMatrix4fv(uniformWorldViewProjection, false, M)
+
+            switch(shape.type) {
+                case CUBE:
+                    webglUtils.renderCubeLighting(shape);
+                    break;
+                case PYRAMID:
+                    webglUtils.renderPyramidLighting(shape);
+                    break;
+                case DIAMOND:
+                    webglUtils.renderDiamondLighting(shape);
+                    break;
+                default:
+                    break;
             }
-        })
+         })
     })
 }
 
