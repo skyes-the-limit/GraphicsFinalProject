@@ -1,21 +1,16 @@
 {
-  "name": "graphics",
+  "name": "graphicsfinal3js",
   "version": "1.0.0",
-  "description": "CS 5300 Code",
-  "main": "index.js",
+  "description": "graphics final project team 2",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "test",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "-": "0.0.1",
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "save": "^2.4.0",
-    "watson-developer-cloud": "^4.0.1"
-  },
-  "devDependencies": {
-    "ibm-watson": "^5.7.1"
+    "three": "^0.122.0",
+    "express": "^4.17.1"
   }
 }
