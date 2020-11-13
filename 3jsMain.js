@@ -1,63 +1,192 @@
+
 import * as THREE from './node_modules/three/build/three.module.js';
 
+let scene, camera, renderer, spotLight;
+let cameraMoveMouse = true;
 const main = () => {
 
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75,
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(75,
       window.innerWidth / window.innerHeight, 1, 1000);
 
-  const renderer = new THREE.WebGLRenderer( { canvas: canvas } );
+  const cameraPerspectiveHelper = new THREE.CameraHelper( camera );
+  scene.add( cameraPerspectiveHelper );
+
+  renderer = new THREE.WebGLRenderer({canvas: canvas});
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
 
-  const geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
-  const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-  const cube = new THREE.Mesh( geometry, material );
+
+
+
+
+  // let material = new THREE.MeshPhongMaterial( { color: 0x808080, dithering: true } );
+  //
+  // let geometry = new THREE.PlaneBufferGeometry( 2000, 2000 );
+  //
+  // let mesh = new THREE.Mesh( geometry, material );
+  // mesh.position.set( 0, 0, -30 );
+  // mesh.rotation.x = - Math.PI * 0.5;
+  // mesh.receiveShadow = true;
+  // scene.add( mesh );
+  //
+  // //
+  //
+  // material = new THREE.MeshPhongMaterial( { color: 0x4080ff, dithering: true } );
+  //
+  // geometry = new THREE.CylinderBufferGeometry( 5, 5, 2, 32, 1, false );
+  //
+  // mesh = new THREE.Mesh( geometry, material );
+  // mesh.position.set( 0, 5, 0 );
+  // mesh.castShadow = true;
+  // scene.add( mesh );
+
+  let geometry = new THREE.BoxBufferGeometry(1, 1, 1);
+  let material = new THREE.MeshPhongMaterial({color: 0x00ff00});
+  const cube = new THREE.Mesh(geometry, material);
   // cube.translateOnAxis([-1, -1, 0], 10);
-  cube.position.z = -10
-  cube.rotation.y = 10
-  cube.rotation.z = 10
-  cube.position.y = 10;
-  // cube.position.x = 300;
-  scene.add( cube )
+  cube.position.set(0, 10, -20);
+  cube.rotation.set(0, 1, 10);
+  cube.castShadow = true;
+  cube.receiveShadow = true;
+  // cube.visible = false;
+  scene.add(cube);
 
-  camera.position.z = 10;
+  const cube2 = new THREE.Mesh(geometry, material);
+  cube2.position.set(0, 11, -21);
+  cube2.castShadow = true;
+  cube2.receiveShadow = true;
+  scene.add(cube2);
+
+
+
+  camera.position.set(0, 0, 0);
   // camera.setPosition(10, 10, 10);
 
-  renderer.render( scene, camera );
+  const ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
+  scene.add( ambient );
 
-  // var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
-  // var material1 = new THREE.MeshBasicMaterial();
-  // var material2 = new THREE.MeshBasicMaterial();
-  // var sphere = [new THREE.Mesh(geometry, material1), new THREE.Mesh(geometry, material1), new THREE.Mesh(geometry, material2)];
-  //
-  // sphere[0].position.set(1, 1, 1);
-  // sphere[1].position.set(-1, -1, -1);
-  //
-  // scene.add(sphere[0]);
-  // scene.add(sphere[1]);
-  // scene.add(sphere[2]);
+  spotLight = new THREE.SpotLight( 0xffffff, 1 );
+  spotLight.position.set( 0, 0, 0);
+  spotLight.angle = Math.PI / 4;
+  spotLight.penumbra = 0.1;
+  spotLight.decay = 2;
+  spotLight.distance = 200;
+
+  spotLight.castShadow = true;
+  spotLight.shadow.mapSize.width = 512;
+  spotLight.shadow.mapSize.height = 512;
+  spotLight.shadow.camera.near = 10;
+  spotLight.shadow.camera.far = 200;
+  spotLight.shadow.focus = 1;
+  scene.add( spotLight );
+
+  const lightHelper = new THREE.SpotLightHelper( spotLight );
+  scene.add( lightHelper );
+
+  const shadowCameraHelper = new THREE.CameraHelper( spotLight.shadow.camera );
+  scene.add( shadowCameraHelper );
 
 
-  //
-  // var hex = "0x" + "000000".replace(/0/g, function() {
-  //   return (~~(Math.random() * 16)).toString(16);
-  // });
-  // sphere[0].material.color.setHex(hex);
-  //
-  // hex = "0x" + "000000".replace(/0/g, function() {
-  //   return (~~(Math.random() * 16)).toString(16);
-  // });
-  // sphere[2].material.color.setHex(hex);
+  spotLight.target.position.set(0, 10, -20);
+  scene.add( spotLight.target );
+  // THREE.FlyControls(camera, canvas);
 
-  //
-  // var render = function() {
-  //   requestAnimationFrame(render);
-  //   renderer.render(scene, camera);
-  // };
+
+  // animate();
+  // Bind motion when text is entered
+  document.addEventListener(
+      'keydown',
+      moveCameraKeyboard,
+      false
+  )
+
+  document.addEventListener(
+      'mousemove',
+      moveCameraMouse,
+      false
+  )
+
+  document.addEventListener(
+      'click',
+      (event) => {cameraMoveMouse = !cameraMoveMouse;
+      },
+      false
+  )
+  render();
+
+}
+
+
+const animate = () => {
+
+  // requestAnimationFrame( animate );
 
   // render();
+  // stats.update();
 
+}
 
+const render = () => {
+  // camera.rotation.y += 1;
+  renderer.render(scene, camera);
+}
+
+const moveCameraKeyboard = (event, direction) => {
+  let defaultCamera = {
+    translation: {x: 0, y: 0, z: 0},
+    rotation: {x: 0, y: 0, z: 0}
+  }
+  const step = 0.5;
+  // const s = step * Math.sin(m4.degToRad(camera.rotation.y));
+  // const c = step * Math.cos(m4.degToRad(camera.rotation.y));
+
+  switch (event.key) {
+    case ("w"):
+      camera.rotation.x += step;
+      break;
+    case ("a"):
+      camera.rotation.y += step;
+      break;
+    case ("s"):
+      camera.rotation.x -= step;
+      break;
+    case ("d"): // TODO: broken?
+      console.log('e')
+      camera.rotation.y -= step;
+      break;
+    case ("q"):
+      camera.rotation.z -= step;
+      break;
+    case ("e"):
+      camera.rotation.z += step;
+      break;
+    case (" "):
+      camera.rotation.x = defaultCamera.rotation.x;
+      camera.rotation.y = defaultCamera.rotation.y;
+      camera.rotation.z = defaultCamera.rotation.z;
+      break;
+  }
+  const xStrength = Math.sin(webglUtils.degToRad(camera.rotation.y));
+  const yStrength = Math.sin(webglUtils.degToRad(-camera.rotation.x));
+  const zStrength = -Math.cos(webglUtils.degToRad(camera.rotation.y + -camera.rotation.x));
+  spotLight.target.position.set(xStrength, yStrength, zStrength); // Not working, doesn't update.
+  // scene.add(spotLight.target)
+  render();
+}
+const moveCameraMouse = (event) => {
+
+  if (cameraMoveMouse) {
+    camera.rotation.y -= event.movementX / 50;
+    camera.rotation.x -= event.movementY / 50;
+  }
+  const xStrength = Math.sin(webglUtils.degToRad(camera.rotation.y));
+  const yStrength = Math.sin(webglUtils.degToRad(-camera.rotation.x));
+  const zStrength = -Math.cos(webglUtils.degToRad(camera.rotation.y + -camera.rotation.x));
+  spotLight.target.position.set(xStrength, yStrength, zStrength);
+  // lightSource = [xStrength, yStrength, zStrength];
+  render();
 }
 main();
