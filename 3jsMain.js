@@ -132,12 +132,12 @@ function getInputObjects (input) {
       geometry = new THREE.BoxGeometry(inputObject.scale[x], inputObject.scale[y], inputObject.scale[z], 4, 4, 4);
     } else if (inputObject.type == "CONE") {
       geometry = new THREE.ConeGeometry(inputObject.scale[x] / 2, inputObject.scale[y], 16, 4);
-    } else if (inputObject.type == "CONE") {
+    } else if (inputObject.type == "CYLINDER") {
       geometry = new THREE.CylinderGeometry(inputObject.scale[x] / 2, inputObject.scale[x] / 2, inputObject.scale[y], 16, 4);
     } else if (inputObject.type == "SPHERE") {
       geometry = new THREE.SphereGeometry(inputObject.scale[x] / 2, 32, 32);
     } else if (inputObject.type == "DIAMOND") {
-      geometry = new THREE.BoxGeometry(inputObject.scale[x] / 2, 4, 2);
+      geometry = new THREE.SphereGeometry(inputObject.scale[x] / 2, 4, 2);
     } else if (inputObject.type == "TORUS") {
       geometry = new THREE.TorusGeometry(inputObject.scale[x] / 2, inputObjects.scale[y] / 2, 8, 50);
     }
