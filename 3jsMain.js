@@ -18,9 +18,10 @@ const main = () => {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputEncoding = THREE.sRGBEncoding;
 
-
-
-
+  // Add all of the API objects to the scene
+  // This is an empty array for now because it will break the scene
+  let objects = getInputObjects([]);
+  objects.forEach(object => scene.add(object))
 
   // let material = new THREE.MeshPhongMaterial( { color: 0x808080, dithering: true } );
   //
@@ -118,6 +119,45 @@ const main = () => {
   render();
 
 }
+
+// Get input from API call
+// I have no clue how this is supposed to work for now, so I'm going to assume
+// it returns an array of an object which has a type, color, size, position, and rotation
+function getInputObjects (input) {
+  let objects = []
+  input.forEach(inputObject => {
+    // Get the object type and size
+    geometry = new THREE.Geometry() // Default will be an empty object
+    if (inputObject.type == "CUBE") {
+      geometry = new THREE.BoxGeometry(inputObject.scale[x], inputObject.scale[y], inputObject.scale[z], 4, 4, 4);
+    } else if (inputObject.type == "CONE") {
+      geometry = new THREE.ConeGeometry(inputObject.scale[x] / 2, inputObject.scale[y], 16, 4);
+    } else if (inputObject.type == "CONE") {
+      geometry = new THREE.CylinderGeometry(inputObject.scale[x] / 2, inputObject.scale[x] / 2, inputObject.scale[y], 16, 4);
+    } else if (inputObject.type == "SPHERE") {
+      geometry = new THREE.SphereGeometry(inputObject.scale[x] / 2, 32, 32);
+    } else if (inputObject.type == "DIAMOND") {
+      geometry = new THREE.BoxGeometry(inputObject.scale[x] / 2, 4, 2);
+    } else if (inputObject.type == "TORUS") {
+      geometry = new THREE.TorusGeometry(inputObject.scale[x] / 2, inputObjects.scale[y] / 2, 8, 50);
+    }
+  
+    // Assign the color and make it
+    // Will add texturing here as necessary
+    const material = new THREE.MeshBasicMaterial(inputObject.color);
+    const object = new THREE.Mesh(geometry, material);
+
+    // Initialize rotation, and position
+    object.rotateX (inputObject.rotation[x])
+    object.rotateY (inputObject.rotation[y])
+    object.rotateZ (inputObject.rotation[z])
+    object.translate (inputObject.position[x], inputObject.position[y], inputObject.position[z])
+    objects.add(object)
+  });
+
+  return objeccts
+}
+
 
 
 const animate = () => {
