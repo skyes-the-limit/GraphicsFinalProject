@@ -129,17 +129,17 @@ function getInputObjects (input) {
     // Get the object type and size
     geometry = new THREE.Geometry() // Default will be an empty object
     if (inputObject.type == "CUBE") {
-      geometry = new THREE.BoxGeometry(inputObject.scale[x], inputObject.scale[y], inputObject.scale[z], 4, 4, 4);
+      geometry = new THREE.BoxGeometry(inputObject.scale[0], inputObject.scale[1], inputObject.scale[2], 4, 4, 4);
     } else if (inputObject.type == "CONE") {
-      geometry = new THREE.ConeGeometry(inputObject.scale[x] / 2, inputObject.scale[y], 16, 4);
+      geometry = new THREE.ConeGeometry(inputObject.scale[0] / 2, inputObject.scale[1], 16, 4);
     } else if (inputObject.type == "CYLINDER") {
-      geometry = new THREE.CylinderGeometry(inputObject.scale[x] / 2, inputObject.scale[x] / 2, inputObject.scale[y], 16, 4);
+      geometry = new THREE.CylinderGeometry(inputObject.scale[0] / 2, inputObject.scale[0] / 2, inputObject.scale[1], 16, 4);
     } else if (inputObject.type == "SPHERE") {
-      geometry = new THREE.SphereGeometry(inputObject.scale[x] / 2, 32, 32);
+      geometry = new THREE.SphereGeometry(inputObject.scale[0] / 2, 32, 32);
     } else if (inputObject.type == "DIAMOND") {
-      geometry = new THREE.SphereGeometry(inputObject.scale[x] / 2, 4, 2);
+      geometry = new THREE.SphereGeometry(inputObject.scale[0] / 2, 4, 2);
     } else if (inputObject.type == "TORUS") {
-      geometry = new THREE.TorusGeometry(inputObject.scale[x] / 2, inputObjects.scale[y] / 2, 8, 50);
+      geometry = new THREE.TorusGeometry(inputObject.scale[0] / 2, inputObjects.scale[y] / 2, 8, 50);
     }
   
     // Assign the color and make it
@@ -148,10 +148,10 @@ function getInputObjects (input) {
     const object = new THREE.Mesh(geometry, material);
 
     // Initialize rotation, and position
-    object.rotateX (inputObject.rotation[x])
-    object.rotateY (inputObject.rotation[y])
-    object.rotateZ (inputObject.rotation[z])
-    object.translate (inputObject.position[x], inputObject.position[y], inputObject.position[z])
+    object.rotateX (inputObject.rotation[0])
+    object.rotateY (inputObject.rotation[1])
+    object.rotateZ (inputObject.rotation[2])
+    object.translate (inputObject.position[0], inputObject.position[1], inputObject.position[2])
     objects.add(object)
   });
 
