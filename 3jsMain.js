@@ -127,7 +127,7 @@ function getInputObjects (input) {
   let objects = []
   input.forEach(inputObject => {
     // Get the object type and size
-    geometry = new THREE.Geometry() // Default will be an empty object
+    let geometry = new THREE.Geometry() // Default will be an empty object
     if (inputObject.type == "CUBE") {
       geometry = new THREE.BoxGeometry(inputObject.scale[0], inputObject.scale[1], inputObject.scale[2], 4, 4, 4);
     } else if (inputObject.type == "CONE") {
@@ -141,7 +141,7 @@ function getInputObjects (input) {
     } else if (inputObject.type == "TORUS") {
       geometry = new THREE.TorusGeometry(inputObject.scale[0] / 2, inputObjects.scale[y] / 2, 8, 50);
     }
-  
+
     // Assign the color and make it
     // Will add texturing here as necessary
     const material = new THREE.MeshBasicMaterial(inputObject.color);
@@ -155,7 +155,7 @@ function getInputObjects (input) {
     objects.add(object)
   });
 
-  return objeccts
+  return objects
 }
 
 
