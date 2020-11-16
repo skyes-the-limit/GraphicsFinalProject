@@ -3,6 +3,60 @@ import * as THREE from './node_modules/three/build/three.module.js';
 
 let scene, camera, renderer, spotLight;
 let cameraMoveMouse = true;
+
+// Sample API object for testing purposes.
+const testInput = [
+  {
+    type: "CUBE",
+    dimensions: {x: 1, y: 1, z: 1},
+    color: 0x00ff00,
+    translation: {x: 0, y: 0, z: -10},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
+  },
+  {
+    type: "CONE",
+    dimensions: {x: 1, y: 1, z: 1},
+    color: 0x00ff00,
+    translation: {x: 10, y: 0, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
+  },
+  {
+    type: "CYLINDER",
+    dimensions: {x: 1, y: 1, z: 1},
+    color: 0x00ff00,
+    translation: {x: -10, y: 0, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
+  },
+  {
+    type: "SPHERE",
+    dimensions: {x: 1, y: 1, z: 1},
+    color: 0x00ff00,
+    translation: {x: 20, y: 0, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
+  },
+  {
+    type: "DIAMOND",
+    dimensions: {x: 1, y: 1, z: 1},
+    color: 0x00ff00,
+    translation: {x: -20, y: 0, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
+  },
+  {
+    type: "TORUS",
+    dimensions: {x: 1, y: 1, z: 1},
+    color: 0x00ff00,
+    translation: {x: -10, y: 10, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 90, y: 0, z: 0},
+  },
+]
+
+
 const main = () => {
 
   scene = new THREE.Scene();
@@ -20,7 +74,7 @@ const main = () => {
 
   // Add all of the API objects to the scene
   // This is an empty array for now because it will break the scene
-  let objects = getInputObjects([]);
+  let objects = getInputObjects(testInput);
   objects.forEach(object => scene.add(object))
 
   // let material = new THREE.MeshPhongMaterial( { color: 0x808080, dithering: true } );
@@ -129,30 +183,32 @@ function getInputObjects (input) {
     // Get the object type and size
     let geometry = new THREE.Geometry() // Default will be an empty object
     if (inputObject.type == "CUBE") {
-      geometry = new THREE.BoxGeometry(inputObject.scale[0], inputObject.scale[1], inputObject.scale[2], 4, 4, 4);
+      geometry = new THREE.BoxGeometry(inputObject.scale.x, inputObject.scale.y, inputObject.scale.z, 4, 4, 4);
     } else if (inputObject.type == "CONE") {
-      geometry = new THREE.ConeGeometry(inputObject.scale[0] / 2, inputObject.scale[1], 16, 4);
+      geometry = new THREE.ConeGeometry(inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
     } else if (inputObject.type == "CYLINDER") {
-      geometry = new THREE.CylinderGeometry(inputObject.scale[0] / 2, inputObject.scale[0] / 2, inputObject.scale[1], 16, 4);
+      geometry = new THREE.CylinderGeometry(inputObject.scale.x / 2, inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
     } else if (inputObject.type == "SPHERE") {
-      geometry = new THREE.SphereGeometry(inputObject.scale[0] / 2, 32, 32);
+      geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 32, 32);
     } else if (inputObject.type == "DIAMOND") {
-      geometry = new THREE.SphereGeometry(inputObject.scale[0] / 2, 4, 2);
+      geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 4, 2);
     } else if (inputObject.type == "TORUS") {
-      geometry = new THREE.TorusGeometry(inputObject.scale[0] / 2, inputObjects.scale[y] / 2, 8, 50);
+      geometry = new THREE.TorusGeometry(inputObject.scale.x / 2, inputObject.scale.y / 2, 8, 50);
     }
 
     // Assign the color and make it
     // Will add texturing here as necessary
-    const material = new THREE.MeshBasicMaterial(inputObject.color);
+    const material = new THREE.MeshPhongMaterial({color: inputObject.color})
     const object = new THREE.Mesh(geometry, material);
+    object.castShadow = true;
+    object.receiveShadow = true;
 
     // Initialize rotation, and position
-    object.rotateX (inputObject.rotation[0])
-    object.rotateY (inputObject.rotation[1])
-    object.rotateZ (inputObject.rotation[2])
-    object.translate (inputObject.position[0], inputObject.position[1], inputObject.position[2])
-    objects.add(object)
+    object.rotateX (inputObject.rotation.x)
+    object.rotateY (inputObject.rotation.y)
+    object.rotateZ (inputObject.rotation.z)
+    object.position.set (inputObject.translation.x, inputObject.translation.y, inputObject.translation.z)
+    objects.push(object)
   });
 
   return objects
