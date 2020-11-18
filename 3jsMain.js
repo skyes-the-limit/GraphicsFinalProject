@@ -2,6 +2,7 @@ import * as THREE from './node_modules/three/build/three.module.js';
 
 let scene, camera, renderer, spotLight;
 let cameraMoveMouse = true;
+let textSubmitted = false;
 
 // Sample API object for testing purposes.
 const testInput = [
@@ -56,7 +57,6 @@ const testInput = [
 ]
 
 const main = () => {
-
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75,
     window.innerWidth / window.innerHeight, 1, 1000);
@@ -142,13 +142,34 @@ const main = () => {
   const shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
   scene.add(shadowCameraHelper);
 
-
   spotLight.target.position.set(0, 10, -20);
   scene.add(spotLight.target);
   // THREE.FlyControls(camera, canvas);
 
+  window.addEventListener('keypress', e => {
+    // If the user has pressed enter within the textarea for the first time
+    if (e.target.id === "textArea" && e.key === "Enter" && !textSubmitted) {
+      onFormSubmit();
+    }
+  })
 
-  // animate();
+  render();
+}
+
+function onFormSubmit() {
+  textSubmitted = true;
+  let canvas = document.getElementById("canvas");
+  let input = document.getElementById("input");
+  let textarea = document.getElementById("textArea");
+  canvas.style["opacity"] = 1;
+  input.style["opacity"] = 0.25;
+  input.style["user-select"] = "none";
+  input.style["-moz-user-select"] = "none";
+  input.style["-khtml-user-select"] = "none";
+  input.style["-webkit-user-select"] = "none";
+  input.style["-o-user-select"] = "none";
+  textarea.setAttribute("disabled", "true");
+
   // Bind motion when text is entered
   document.addEventListener(
     'keydown',
@@ -169,8 +190,6 @@ const main = () => {
     },
     false
   )
-  render();
-
 }
 
 // Get input from API call
@@ -181,18 +200,25 @@ function getInputObjects(input) {
   input.forEach(inputObject => {
     // Get the object type and size
     let geometry = new THREE.Geometry() // Default will be an empty object
-    if (inputObject.type == "CUBE") {
-      geometry = new THREE.BoxGeometry(inputObject.scale.x, inputObject.scale.y, inputObject.scale.z, 4, 4, 4);
-    } else if (inputObject.type == "CONE") {
-      geometry = new THREE.ConeGeometry(inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
-    } else if (inputObject.type == "CYLINDER") {
-      geometry = new THREE.CylinderGeometry(inputObject.scale.x / 2, inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
-    } else if (inputObject.type == "SPHERE") {
-      geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 32, 32);
-    } else if (inputObject.type == "DIAMOND") {
-      geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 4, 2);
-    } else if (inputObject.type == "TORUS") {
-      geometry = new THREE.TorusGeometry(inputObject.scale.x / 2, inputObject.scale.y / 2, 8, 50);
+    switch (inputObject.type) {
+      case "CUBE":
+        geometry = new THREE.BoxGeometry(inputObject.scale.x, inputObject.scale.y, inputObject.scale.z, 4, 4, 4);
+        break;
+      case "CONE":
+        geometry = new THREE.ConeGeometry(inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
+        break;
+      case "CYLINDER":
+        geometry = new THREE.CylinderGeometry(inputObject.scale.x / 2, inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
+        break;
+      case "SPHERE":
+        geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 32, 32);
+        break;
+      case "DIAMOND":
+        geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 4, 2);
+        break;
+      case "TORUS":
+        geometry = new THREE.TorusGeometry(inputObject.scale.x / 2, inputObject.scale.y / 2, 8, 50);
+        break;
     }
 
     // Assign the color and make it
@@ -213,15 +239,11 @@ function getInputObjects(input) {
   return objects
 }
 
-
-
 const animate = () => {
-
   // requestAnimationFrame( animate );
 
   // render();
   // stats.update();
-
 }
 
 const render = () => {
@@ -271,8 +293,8 @@ const moveCameraKeyboard = (event, direction) => {
   // scene.add(spotLight.target)
   render();
 }
-const moveCameraMouse = (event) => {
 
+const moveCameraMouse = (event) => {
   if (cameraMoveMouse) {
     camera.rotation.y -= event.movementX / 50;
     camera.rotation.x -= event.movementY / 50;

@@ -1,9 +1,3 @@
-# ignore libraries
-
-
-# ignore build files
-
 .idea
-
 .history
-
+/node_modules
