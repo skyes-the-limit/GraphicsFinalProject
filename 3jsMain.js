@@ -1,4 +1,3 @@
-
 import * as THREE from './node_modules/three/build/three.module.js';
 
 let scene, camera, renderer, spotLight;
@@ -8,65 +7,64 @@ let cameraMoveMouse = true;
 const testInput = [
   {
     type: "CUBE",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: 0, y: 0, z: -10},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: 0, y: 0, z: -10 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "CONE",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: 10, y: 0, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: 10, y: 0, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "CYLINDER",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: -10, y: 0, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: -10, y: 0, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "SPHERE",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: 20, y: 0, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: 20, y: 0, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "DIAMOND",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: -20, y: 0, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: -20, y: 0, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "TORUS",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: -10, y: 10, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 90, y: 0, z: 0},
+    translation: { x: -10, y: 10, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 90, y: 0, z: 0 },
   },
 ]
-
 
 const main = () => {
 
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75,
-      window.innerWidth / window.innerHeight, 1, 1000);
+    window.innerWidth / window.innerHeight, 1, 1000);
 
-  const cameraPerspectiveHelper = new THREE.CameraHelper( camera );
-  scene.add( cameraPerspectiveHelper );
+  const cameraPerspectiveHelper = new THREE.CameraHelper(camera);
+  scene.add(cameraPerspectiveHelper);
 
-  renderer = new THREE.WebGLRenderer({canvas: canvas});
+  renderer = new THREE.WebGLRenderer({ canvas: canvas });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -99,7 +97,7 @@ const main = () => {
   // scene.add( mesh );
 
   let geometry = new THREE.BoxBufferGeometry(1, 1, 1);
-  let material = new THREE.MeshPhongMaterial({color: 0x00ff00});
+  let material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(geometry, material);
   // cube.translateOnAxis([-1, -1, 0], 10);
   cube.position.set(0, 10, -20);
@@ -120,11 +118,11 @@ const main = () => {
   camera.position.set(0, 0, 0);
   // camera.setPosition(10, 10, 10);
 
-  const ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
-  scene.add( ambient );
+  const ambient = new THREE.AmbientLight(0xffffff, 0.1);
+  scene.add(ambient);
 
-  spotLight = new THREE.SpotLight( 0xffffff, 1 );
-  spotLight.position.set( 0, 0, 0);
+  spotLight = new THREE.SpotLight(0xffffff, 1);
+  spotLight.position.set(0, 0, 0);
   spotLight.angle = Math.PI / 4;
   spotLight.penumbra = 0.1;
   spotLight.decay = 2;
@@ -136,39 +134,40 @@ const main = () => {
   spotLight.shadow.camera.near = 10;
   spotLight.shadow.camera.far = 200;
   spotLight.shadow.focus = 1;
-  scene.add( spotLight );
+  scene.add(spotLight);
 
-  const lightHelper = new THREE.SpotLightHelper( spotLight );
-  scene.add( lightHelper );
+  const lightHelper = new THREE.SpotLightHelper(spotLight);
+  scene.add(lightHelper);
 
-  const shadowCameraHelper = new THREE.CameraHelper( spotLight.shadow.camera );
-  scene.add( shadowCameraHelper );
+  const shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+  scene.add(shadowCameraHelper);
 
 
   spotLight.target.position.set(0, 10, -20);
-  scene.add( spotLight.target );
+  scene.add(spotLight.target);
   // THREE.FlyControls(camera, canvas);
 
 
   // animate();
   // Bind motion when text is entered
   document.addEventListener(
-      'keydown',
-      moveCameraKeyboard,
-      false
+    'keydown',
+    moveCameraKeyboard,
+    false
   )
 
   document.addEventListener(
-      'mousemove',
-      moveCameraMouse,
-      false
+    'mousemove',
+    moveCameraMouse,
+    false
   )
 
   document.addEventListener(
-      'click',
-      (event) => {cameraMoveMouse = !cameraMoveMouse;
-      },
-      false
+    'click',
+    (event) => {
+      cameraMoveMouse = !cameraMoveMouse;
+    },
+    false
   )
   render();
 
@@ -177,7 +176,7 @@ const main = () => {
 // Get input from API call
 // I have no clue how this is supposed to work for now, so I'm going to assume
 // it returns an array of an object which has a type, color, size, position, and rotation
-function getInputObjects (input) {
+function getInputObjects(input) {
   let objects = []
   input.forEach(inputObject => {
     // Get the object type and size
@@ -198,16 +197,16 @@ function getInputObjects (input) {
 
     // Assign the color and make it
     // Will add texturing here as necessary
-    const material = new THREE.MeshPhongMaterial({color: inputObject.color})
+    const material = new THREE.MeshPhongMaterial({ color: inputObject.color })
     const object = new THREE.Mesh(geometry, material);
     object.castShadow = true;
     object.receiveShadow = true;
 
     // Initialize rotation, and position
-    object.rotateX (inputObject.rotation.x)
-    object.rotateY (inputObject.rotation.y)
-    object.rotateZ (inputObject.rotation.z)
-    object.position.set (inputObject.translation.x, inputObject.translation.y, inputObject.translation.z)
+    object.rotateX(inputObject.rotation.x)
+    object.rotateY(inputObject.rotation.y)
+    object.rotateZ(inputObject.rotation.z)
+    object.position.set(inputObject.translation.x, inputObject.translation.y, inputObject.translation.z)
     objects.push(object)
   });
 
@@ -232,8 +231,8 @@ const render = () => {
 
 const moveCameraKeyboard = (event, direction) => {
   let defaultCamera = {
-    translation: {x: 0, y: 0, z: 0},
-    rotation: {x: 0, y: 0, z: 0}
+    translation: { x: 0, y: 0, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 }
   }
   const step = 0.5;
   // const s = step * Math.sin(m4.degToRad(camera.rotation.y));
