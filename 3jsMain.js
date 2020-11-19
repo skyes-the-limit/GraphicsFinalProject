@@ -213,8 +213,10 @@ async function apiCall(inputText) {
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     // credentials: 'same-origin', // include, *same-origin, omit
     headers: {
+      // IBM requests this content-type
       'Content-Type': 'text/plain;charset=utf-8',
       // btoa base64 encodes a string, what IBM expects
+      // https://stackoverflow.com/questions/30203044/using-an-authorization-header-with-fetch-in-react-native
       'Authorization': 'Basic ' + btoa(credentials),
       // 'Content-Type': 'application/json'
       // 'Content-Type': 'application/x-www-form-urlencoded',
