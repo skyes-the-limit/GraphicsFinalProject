@@ -96,9 +96,6 @@ const main = () => {
   // mesh.castShadow = true;
   // scene.add( mesh );
 
-  // TODO:  IBM
-  // curl -X GET -u "apikey:qB92x6pn98MGaei5j9TLmUhdCjmmU5eITHzJMbS2gKFM" "https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/5942acc2-d420-4bfc-96b0-5684b5ae65d1"
-
   let geometry = new THREE.BoxBufferGeometry(1, 1, 1);
   let material = new THREE.MeshPhongMaterial({color: 0x00ff00});
   material.emissive.set(0xff00ff);
@@ -208,8 +205,6 @@ async function apiCall(inputText) {
   let url = "https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/5942acc2-d420-4bfc-96b0-5684b5ae65d1/v3/tone?version=2017-09-21&text="
       + inputText;
 
-// async function postData(url , credentials = {}) {
-// Default options are marked with *
   const response = await fetch(url, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     // mode: 'cors', // no-cors, *cors, same-origin
@@ -217,6 +212,7 @@ async function apiCall(inputText) {
     // credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'text/plain;charset=utf-8',
+      // btoa base64 encodes a string, what IBM expects
       'Authorization': 'Basic ' + btoa(credentials),
       // 'Content-Type': 'application/json'
       // 'Content-Type': 'application/x-www-form-urlencoded',
