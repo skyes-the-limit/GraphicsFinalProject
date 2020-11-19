@@ -153,6 +153,8 @@ const main = () => {
     }
   })
 
+  window.addEventListener( 'resize', onWindowResize, false );
+
   // animate();
   render();
 }
@@ -343,4 +345,16 @@ const moveCameraMouse = (event) => {
 
   render();
 }
+
+
+function onWindowResize() {
+
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  render();
+}
+
+
 main();
