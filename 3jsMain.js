@@ -153,6 +153,7 @@ const main = () => {
     }
   })
 
+  // animate();
   render();
 }
 
@@ -160,8 +161,10 @@ function onFormSubmit() {
   textSubmitted = true;
   let canvas = document.getElementById("canvas");
   let input = document.getElementById("input");
+  let inputTitle = document.getElementById("inputTitle");
   let textarea = document.getElementById("textArea");
   canvas.style["opacity"] = 1;
+  inputTitle.style["opacity"] = 0;
   input.style["opacity"] = 0.25;
   input.style["user-select"] = "none";
   input.style["-moz-user-select"] = "none";
@@ -190,6 +193,10 @@ function onFormSubmit() {
     },
     false
   )
+
+  // Push to Watson API
+  $('#myform').submit();
+  // TODO: Convert to js
 }
 
 // Get input from API call
