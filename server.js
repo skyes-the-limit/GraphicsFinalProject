@@ -14,22 +14,22 @@ app.use(express.static('./'));
 //     //https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/5942acc2-d420-4bfc-96b0-5684b5ae65d1
 // });
 
-// app.post('/myaction', function(req, res) {
-//     text1 = req.body.textArea;
-//     toneAnalyzer.tone(
-//         {
-//             toneInput: text1,
-//             contentType: 'text/plain'
-//         })
-//         .then(response => {
-//             console.log(text1)
-//             console.log(JSON.stringify(response.result, null, 2));
-//             res.send(response.result);
-//         })
-//         .catch(err => {
-//             console.log(err);
-//         });
-// })
+app.post('/myaction', function(req, res) {
+    text1 = req.body.textArea;
+    toneAnalyzer.tone(
+        {
+            toneInput: text1,
+            contentType: 'text/plain'
+        })
+        .then(response => {
+            console.log(text1)
+            console.log(JSON.stringify(response.result, null, 2));
+            res.send(response.result);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+})
 
 app.listen(3000);
 

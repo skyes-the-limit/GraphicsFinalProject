@@ -8,63 +8,63 @@ let textSubmitted = false;
 const testInput = [
   {
     type: "CUBE",
-    dimensions: { x: 1, y: 1, z: 1 },
+    dimensions: {x: 1, y: 1, z: 1},
     color: 0x00ff00,
-    translation: { x: 0, y: 0, z: -10 },
-    scale: { x: 1, y: 1, z: 1 },
-    rotation: { x: 0, y: 0, z: 0 },
+    translation: {x: 0, y: 0, z: -10},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
   },
   {
     type: "CONE",
-    dimensions: { x: 1, y: 1, z: 1 },
+    dimensions: {x: 1, y: 1, z: 1},
     color: 0x00ff00,
-    translation: { x: 10, y: 0, z: -20 },
-    scale: { x: 1, y: 1, z: 1 },
-    rotation: { x: 0, y: 0, z: 0 },
+    translation: {x: 10, y: 0, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
   },
   {
     type: "CYLINDER",
-    dimensions: { x: 1, y: 1, z: 1 },
+    dimensions: {x: 1, y: 1, z: 1},
     color: 0x00ff00,
-    translation: { x: -10, y: 0, z: -20 },
-    scale: { x: 1, y: 1, z: 1 },
-    rotation: { x: 0, y: 0, z: 0 },
+    translation: {x: -10, y: 0, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
   },
   {
     type: "SPHERE",
-    dimensions: { x: 1, y: 1, z: 1 },
+    dimensions: {x: 1, y: 1, z: 1},
     color: 0x00ff00,
-    translation: { x: 20, y: 0, z: -20 },
-    scale: { x: 1, y: 1, z: 1 },
-    rotation: { x: 0, y: 0, z: 0 },
+    translation: {x: 20, y: 0, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
   },
   {
     type: "DIAMOND",
-    dimensions: { x: 1, y: 1, z: 1 },
+    dimensions: {x: 1, y: 1, z: 1},
     color: 0x00ff00,
-    translation: { x: -20, y: 0, z: -20 },
-    scale: { x: 1, y: 1, z: 1 },
-    rotation: { x: 0, y: 0, z: 0 },
+    translation: {x: -20, y: 0, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 0, y: 0, z: 0},
   },
   {
     type: "TORUS",
-    dimensions: { x: 1, y: 1, z: 1 },
+    dimensions: {x: 1, y: 1, z: 1},
     color: 0x00ff00,
-    translation: { x: -10, y: 10, z: -20 },
-    scale: { x: 1, y: 1, z: 1 },
-    rotation: { x: 90, y: 0, z: 0 },
+    translation: {x: -10, y: 10, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    rotation: {x: 90, y: 0, z: 0},
   },
 ]
 
 const main = () => {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75,
-    window.innerWidth / window.innerHeight, 1, 1000);
+      window.innerWidth / window.innerHeight, 1, 1000);
 
   const cameraPerspectiveHelper = new THREE.CameraHelper(camera);
   scene.add(cameraPerspectiveHelper);
 
-  renderer = new THREE.WebGLRenderer({ canvas: canvas });
+  renderer = new THREE.WebGLRenderer({canvas: canvas});
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -96,8 +96,12 @@ const main = () => {
   // mesh.castShadow = true;
   // scene.add( mesh );
 
+  // TODO:  IBM
+  // curl -X GET -u "apikey:qB92x6pn98MGaei5j9TLmUhdCjmmU5eITHzJMbS2gKFM" "https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/5942acc2-d420-4bfc-96b0-5684b5ae65d1"
+
   let geometry = new THREE.BoxBufferGeometry(1, 1, 1);
-  let material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+  let material = new THREE.MeshPhongMaterial({color: 0x00ff00});
+  material.emissive.set(0xff00ff);
   const cube = new THREE.Mesh(geometry, material);
   // cube.translateOnAxis([-1, -1, 0], 10);
   cube.position.set(0, 10, -20);
@@ -106,14 +110,13 @@ const main = () => {
   cube.receiveShadow = true;
   // cube.visible = false;
   scene.add(cube);
+  material = new THREE.MeshPhongMaterial({color: 0xff00ff})
 
   const cube2 = new THREE.Mesh(geometry, material);
   cube2.position.set(0, 11, -21);
   cube2.castShadow = true;
   cube2.receiveShadow = true;
   scene.add(cube2);
-
-
 
   camera.position.set(0, 0, 0);
   // camera.setPosition(10, 10, 10);
@@ -123,7 +126,7 @@ const main = () => {
 
   spotLight = new THREE.SpotLight(0xffffff, 1);
   spotLight.position.set(0, 0, 0);
-  spotLight.angle = Math.PI / 4;
+  spotLight.angle = Math.PI / 10;
   spotLight.penumbra = 0.1;
   spotLight.decay = 2;
   spotLight.distance = 200;
@@ -142,7 +145,7 @@ const main = () => {
   const shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
   scene.add(shadowCameraHelper);
 
-  spotLight.target.position.set(0, 10, -20);
+  spotLight.target.position.set(0, 0, -10);
   scene.add(spotLight.target);
   // THREE.FlyControls(camera, canvas);
 
@@ -157,7 +160,7 @@ const main = () => {
   render();
 }
 
-function onFormSubmit() {
+async function onFormSubmit() {
   textSubmitted = true;
   let canvas = document.getElementById("canvas");
   let input = document.getElementById("input");
@@ -171,32 +174,59 @@ function onFormSubmit() {
   input.style["-khtml-user-select"] = "none";
   input.style["-webkit-user-select"] = "none";
   input.style["-o-user-select"] = "none";
+  let inputText = textarea.value;
   textarea.setAttribute("disabled", "true");
 
   // Bind motion when text is entered
   document.addEventListener(
-    'keydown',
-    moveCameraKeyboard,
-    false
+      'keydown',
+      moveCameraKeyboard,
+      false
   )
 
   document.addEventListener(
-    'mousemove',
-    moveCameraMouse,
-    false
+      'mousemove',
+      moveCameraMouse,
+      false
   )
 
   document.addEventListener(
-    'click',
-    (event) => {
-      cameraMoveMouse = !cameraMoveMouse;
+      'click',
+      (event) => {
+        cameraMoveMouse = !cameraMoveMouse;
+      },
+      false
+  )
+
+  const jsonResponse = await apiCall(inputText);
+  console.log(jsonResponse);
+
+}
+
+async function apiCall(inputText) {
+  let credentials = "apikey:qB92x6pn98MGaei5j9TLmUhdCjmmU5eITHzJMbS2gKFM"
+  let url = "https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/5942acc2-d420-4bfc-96b0-5684b5ae65d1/v3/tone?version=2017-09-21&text="
+      + inputText;
+
+// async function postData(url , credentials = {}) {
+// Default options are marked with *
+  const response = await fetch(url, {
+    method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    // mode: 'cors', // no-cors, *cors, same-origin
+    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    // credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8',
+      'Authorization': 'Basic ' + btoa(credentials),
+      // 'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    false
-  )
+    // redirect: 'follow', // manual, *follow, error
+    // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    // body: JSON.stringify(data) // body data type must match "Content-Type" header
+  });
+    return response.json(); // parses JSON response into native JavaScript objects
 
-  // Push to Watson API
-  $('#myform').submit();
-  // TODO: Convert to js
 }
 
 // Get input from API call
@@ -209,13 +239,16 @@ function getInputObjects(input) {
     let geometry = new THREE.Geometry() // Default will be an empty object
     switch (inputObject.type) {
       case "CUBE":
-        geometry = new THREE.BoxGeometry(inputObject.scale.x, inputObject.scale.y, inputObject.scale.z, 4, 4, 4);
+        geometry = new THREE.BoxGeometry(inputObject.scale.x,
+            inputObject.scale.y, inputObject.scale.z, 4, 4, 4);
         break;
       case "CONE":
-        geometry = new THREE.ConeGeometry(inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
+        geometry = new THREE.ConeGeometry(inputObject.scale.x / 2,
+            inputObject.scale.y, 16, 4);
         break;
       case "CYLINDER":
-        geometry = new THREE.CylinderGeometry(inputObject.scale.x / 2, inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
+        geometry = new THREE.CylinderGeometry(inputObject.scale.x / 2,
+            inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
         break;
       case "SPHERE":
         geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 32, 32);
@@ -224,13 +257,14 @@ function getInputObjects(input) {
         geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 4, 2);
         break;
       case "TORUS":
-        geometry = new THREE.TorusGeometry(inputObject.scale.x / 2, inputObject.scale.y / 2, 8, 50);
+        geometry = new THREE.TorusGeometry(inputObject.scale.x / 2,
+            inputObject.scale.y / 2, 8, 50);
         break;
     }
 
     // Assign the color and make it
     // Will add texturing here as necessary
-    const material = new THREE.MeshPhongMaterial({ color: inputObject.color })
+    const material = new THREE.MeshPhongMaterial({color: inputObject.color})
     const object = new THREE.Mesh(geometry, material);
     object.castShadow = true;
     object.receiveShadow = true;
@@ -239,7 +273,8 @@ function getInputObjects(input) {
     object.rotateX(inputObject.rotation.x)
     object.rotateY(inputObject.rotation.y)
     object.rotateZ(inputObject.rotation.z)
-    object.position.set(inputObject.translation.x, inputObject.translation.y, inputObject.translation.z)
+    object.position.set(inputObject.translation.x, inputObject.translation.y,
+        inputObject.translation.z)
     objects.push(object)
   });
 
@@ -260,14 +295,18 @@ const render = () => {
 
 const moveCameraKeyboard = (event, direction) => {
   let defaultCamera = {
-    translation: { x: 0, y: 0, z: 0 },
-    rotation: { x: 0, y: 0, z: 0 }
+    translation: {x: 0, y: 0, z: 0},
+    rotation: {x: 0, y: 0, z: 0}
   }
   const step = 0.5;
   // const s = step * Math.sin(m4.degToRad(camera.rotation.y));
   // const c = step * Math.cos(m4.degToRad(camera.rotation.y));
 
+  // console.log(event.key);
   switch (event.key) {
+    case ("d"):
+      camera.rotation.y -= step;
+      break;
     case ("w"):
       camera.rotation.x += step;
       break;
@@ -277,10 +316,7 @@ const moveCameraKeyboard = (event, direction) => {
     case ("s"):
       camera.rotation.x -= step;
       break;
-    case ("d"): // TODO: broken?
-      console.log('e')
-      camera.rotation.y -= step;
-      break;
+
     case ("q"):
       camera.rotation.z -= step;
       break;
@@ -293,23 +329,43 @@ const moveCameraKeyboard = (event, direction) => {
       camera.rotation.z = defaultCamera.rotation.z;
       break;
   }
-  const xStrength = Math.sin(webglUtils.degToRad(camera.rotation.y));
-  const yStrength = Math.sin(webglUtils.degToRad(-camera.rotation.x));
-  const zStrength = -Math.cos(webglUtils.degToRad(camera.rotation.y + -camera.rotation.x));
-  spotLight.target.position.set(xStrength, yStrength, zStrength); // Not working, doesn't update.
-  // scene.add(spotLight.target)
+  const xStrength = -Math.sin(camera.rotation.y);
+  let yStrength = -Math.sin(-camera.rotation.x);
+  const zStrength = -Math.cos(camera.rotation.y + -camera.rotation.x);
+  if ((camera.rotation.x > (Math.PI / 2) && camera.rotation.y > (Math.PI / 2))
+      || (-camera.rotation.x > (Math.PI / 2) && -camera.rotation.y > (Math.PI
+          / 2))) {
+    yStrength = -yStrength;
+  }
+  spotLight.target.position.set(xStrength * 100, yStrength * 100,
+      zStrength * 100);
   render();
 }
 
 const moveCameraMouse = (event) => {
   if (cameraMoveMouse) {
-    camera.rotation.y -= event.movementX / 50;
-    camera.rotation.x -= event.movementY / 50;
+    camera.rotation.y -= event.movementX / 200;
+    camera.rotation.x -= event.movementY / 200;
+    camera.rotation.y = camera.rotation.y % (2 * Math.PI);
+    camera.rotation.x = camera.rotation.x % (2 * Math.PI);
+    // camera.lookAt(new Vector3())
   }
-  const xStrength = Math.sin(webglUtils.degToRad(camera.rotation.y));
-  const yStrength = Math.sin(webglUtils.degToRad(-camera.rotation.x));
-  const zStrength = -Math.cos(webglUtils.degToRad(camera.rotation.y + -camera.rotation.x));
-  spotLight.target.position.set(xStrength, yStrength, zStrength);
+  const xStrength = -Math.sin(camera.rotation.y);
+  let yStrength = -Math.sin(-camera.rotation.x);
+  const zStrength = -Math.cos(camera.rotation.y + -camera.rotation.x);
+  // TODO : Likely need to add 3 * Math.PI / 2 case, 2 quadrants.
+  if ((camera.rotation.x > (Math.PI / 2) && camera.rotation.y > (Math.PI / 2))
+      || (-camera.rotation.x > (Math.PI / 2) && -camera.rotation.y > (Math.PI
+          / 2))) {
+    yStrength = -yStrength;
+  }
+  spotLight.target.position.set(xStrength * 100, yStrength * 100,
+      zStrength * 100);
+  // console.log(camera.rotation);
+  // spotLight.target.position.set(Math.sin(camera.rotation.y), Math.sin(camera.rotation.x), Math.sin(camera.rotation.z));
+
+  // console.log(xStrength, yStrength, zStrength);
+  // spotLight.target.position.set(xStrength, yStrength, zStrength);
   // lightSource = [xStrength, yStrength, zStrength];
   render();
 }
