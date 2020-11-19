@@ -298,11 +298,7 @@ const moveCameraKeyboard = (event, direction) => {
     translation: {x: 0, y: 0, z: 0},
     rotation: {x: 0, y: 0, z: 0}
   }
-  const step = 0.5;
-  // const s = step * Math.sin(m4.degToRad(camera.rotation.y));
-  // const c = step * Math.cos(m4.degToRad(camera.rotation.y));
-
-  // console.log(event.key);
+  const step = 0.08;
   switch (event.key) {
     case ("d"):
       camera.rotation.y -= step;
@@ -329,16 +325,9 @@ const moveCameraKeyboard = (event, direction) => {
       camera.rotation.z = defaultCamera.rotation.z;
       break;
   }
-  const xStrength = -Math.sin(camera.rotation.y);
-  let yStrength = -Math.sin(-camera.rotation.x);
-  const zStrength = -Math.cos(camera.rotation.y + -camera.rotation.x);
-  if ((camera.rotation.x > (Math.PI / 2) && camera.rotation.y > (Math.PI / 2))
-      || (-camera.rotation.x > (Math.PI / 2) && -camera.rotation.y > (Math.PI
-          / 2))) {
-    yStrength = -yStrength;
-  }
-  spotLight.target.position.set(xStrength * 100, yStrength * 100,
-      zStrength * 100);
+  const vector = new THREE.Vector3( 0, 0, - 1 );
+  vector.applyQuaternion( camera.quaternion );
+  spotLight.target.position.set(vector.x, vector.y, vector.z);
   render();
 }
 
@@ -348,25 +337,14 @@ const moveCameraMouse = (event) => {
     camera.rotation.x -= event.movementY / 200;
     camera.rotation.y = camera.rotation.y % (2 * Math.PI);
     camera.rotation.x = camera.rotation.x % (2 * Math.PI);
-    // camera.lookAt(new Vector3())
   }
-  const xStrength = -Math.sin(camera.rotation.y);
-  let yStrength = -Math.sin(-camera.rotation.x);
-  const zStrength = -Math.cos(camera.rotation.y + -camera.rotation.x);
-  // TODO : Likely need to add 3 * Math.PI / 2 case, 2 quadrants.
-  if ((camera.rotation.x > (Math.PI / 2) && camera.rotation.y > (Math.PI / 2))
-      || (-camera.rotation.x > (Math.PI / 2) && -camera.rotation.y > (Math.PI
-          / 2))) {
-    yStrength = -yStrength;
-  }
-  spotLight.target.position.set(xStrength * 100, yStrength * 100,
-      zStrength * 100);
-  // console.log(camera.rotation);
-  // spotLight.target.position.set(Math.sin(camera.rotation.y), Math.sin(camera.rotation.x), Math.sin(camera.rotation.z));
+  // Elegant solution to calculating position from angle
+  // https://stackoverflow.com/questions/14813902/three-js-get-the-direction-in-which-the-camera-is-looking
 
-  // console.log(xStrength, yStrength, zStrength);
-  // spotLight.target.position.set(xStrength, yStrength, zStrength);
-  // lightSource = [xStrength, yStrength, zStrength];
+  const vector = new THREE.Vector3( 0, 0, - 1 );
+  vector.applyQuaternion( camera.quaternion );
+  spotLight.target.position.set(vector.x, vector.y, vector.z);
+
   render();
 }
 main();
