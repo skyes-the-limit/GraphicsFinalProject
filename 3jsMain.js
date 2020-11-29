@@ -326,13 +326,13 @@ const animate = () => {
 
   const elapsed = time - last;
 
-  console.log(elapsed);
+  // console.log(elapsed);
 
   // if enough time has elapsed, draw the next frame
 
   if (elapsed > fpsInterval) {
     last = time;
-    console.log("test")
+    // console.log("test")
 
     time *= 0.0003;
     shapes.forEach(shape => {
