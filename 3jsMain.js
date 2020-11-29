@@ -1,8 +1,11 @@
 import * as THREE from './node_modules/three/build/three.module.js';
+import {OBJLoader2} from
+      './node_modules/three/examples/jsm/loaders/OBJLoader2.js';
 
 let scene, camera, renderer, spotLight;
 let cameraMoveMouse = true;
 let textSubmitted = false;
+let shapes = [];
 
 // Sample API object for testing purposes.
 const testInput = [
@@ -61,9 +64,6 @@ const main = () => {
   camera = new THREE.PerspectiveCamera(75,
       window.innerWidth / window.innerHeight, 1, 1000);
 
-  const cameraPerspectiveHelper = new THREE.CameraHelper(camera);
-  scene.add(cameraPerspectiveHelper);
-
   renderer = new THREE.WebGLRenderer({canvas: canvas});
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
@@ -72,8 +72,8 @@ const main = () => {
 
   // Add all of the API objects to the scene
   // This is an empty array for now because it will break the scene
-  let objects = getInputObjects(testInput);
-  objects.forEach(object => scene.add(object))
+  shapes = getInputObjects(testInput);
+  shapes.forEach(object => scene.add(object))
 
   // let material = new THREE.MeshPhongMaterial( { color: 0x808080, dithering: true } );
   //
@@ -116,10 +116,12 @@ const main = () => {
   scene.add(cube2);
 
   camera.position.set(0, 0, 0);
-  // camera.setPosition(10, 10, 10);
 
-  const ambient = new THREE.AmbientLight(0xffffff, 0.1);
-  scene.add(ambient);
+  // const ambient = new THREE.AmbientLight(0xffffff, 0.1);
+  // scene.add(ambient);
+  const point = new THREE.PointLight(0xfffff, 0.2); // white right now orange is 0xea9d0d
+  point.position.set(0, 20, 0); // Have shining down from above
+  scene.add(point);
 
   spotLight = new THREE.SpotLight(0xffffff, 1);
   spotLight.position.set(0, 0, 0);
@@ -136,15 +138,40 @@ const main = () => {
   spotLight.shadow.focus = 1;
   scene.add(spotLight);
 
-  const lightHelper = new THREE.SpotLightHelper(spotLight);
-  scene.add(lightHelper);
-
-  const shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-  scene.add(shadowCameraHelper);
-
   spotLight.target.position.set(0, 0, -10);
   scene.add(spotLight.target);
-  // THREE.FlyControls(camera, canvas);
+
+  // Background
+  {
+  const loader = new THREE.CubeTextureLoader();
+  const texture = loader.load([
+      './public/spaceImage.jpg',
+    './public/spaceImage.jpg',
+    './public/spaceImage.jpg',
+    './public/spaceImage.jpg',
+    './public/spaceImage.jpg',
+    './public/spaceImage.jpg',
+  ]);
+  scene.background = texture;
+  // scene.background.
+  }
+  // const loader = new THREE.TextureLoader();
+  // const texture = loader.load(
+  //     './public/EquirectangularMapSpace.png',
+  //     () => {
+  //       const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
+  //       rt.fromEquirectangularTexture(renderer, texture);
+  //       scene.background = rt;
+  //     });
+
+
+  // Load obj
+  const objLoader = new OBJLoader2();
+  objLoader.load('./public/obj/15736_Spiral_Twist_v1_NEW.obj', (root) => {
+    root.position.set(0, -10, -100);
+    scene.add(root);
+  });
+
 
   window.addEventListener('keypress', e => {
     // If the user has pressed enter within the textarea for the first time
@@ -153,9 +180,9 @@ const main = () => {
     }
   })
 
-  window.addEventListener( 'resize', onWindowResize, false );
+  window.addEventListener('resize', onWindowResize, false);
 
-  // animate();
+  animate();
   render();
 }
 
@@ -202,6 +229,10 @@ async function onFormSubmit() {
 
 }
 
+// Possible response emotions are Anger, Fear, Joy, Sadness, Confident, Tentative, Analytical
+// https://tone-analyzer-demo.ng.bluemix.net
+// https://cloud.ibm.com/docs/tone-analyzer?topic=tone-analyzer-overviewDevelopers
+// TODO: Right now things can trigger no emotions, need to have default case, handle this
 async function apiCall(inputText) {
   let credentials = "apikey:qB92x6pn98MGaei5j9TLmUhdCjmmU5eITHzJMbS2gKFM"
   let url = "https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/5942acc2-d420-4bfc-96b0-5684b5ae65d1/v3/tone?version=2017-09-21&text="
@@ -225,7 +256,7 @@ async function apiCall(inputText) {
     // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
     // body: JSON.stringify(data) // body data type must match "Content-Type" header
   });
-    return response.json(); // parses JSON response into native JavaScript objects
+  return response.json(); // parses JSON response into native JavaScript objects
 
 }
 
@@ -233,7 +264,7 @@ async function apiCall(inputText) {
 // I have no clue how this is supposed to work for now, so I'm going to assume
 // it returns an array of an object which has a type, color, size, position, and rotation
 function getInputObjects(input) {
-  let objects = []
+  let shapes = []
   input.forEach(inputObject => {
     // Get the object type and size
     let geometry = new THREE.Geometry() // Default will be an empty object
@@ -275,17 +306,46 @@ function getInputObjects(input) {
     object.rotateZ(inputObject.rotation.z)
     object.position.set(inputObject.translation.x, inputObject.translation.y,
         inputObject.translation.z)
-    objects.push(object)
+    object.emotion = "neutral";
+    object.orbitDistance = ((1000 * Math.random()) % 20) + 10; // At least 10 but no more than 30 away
+    shapes.push(object)
   });
 
-  return objects
+  return shapes;
 }
 
-const animate = () => {
-  // requestAnimationFrame( animate );
 
-  // render();
-  // stats.update();
+
+let last = Date.now();
+const fpsInterval = 1000 / 30; // 30 fps
+
+const animate = () => {
+
+
+  let time = Date.now();
+
+  const elapsed = time - last;
+
+  console.log(elapsed);
+
+  // if enough time has elapsed, draw the next frame
+
+  if (elapsed > fpsInterval) {
+    last = time;
+    console.log("test")
+
+    time *= 0.0003;
+    shapes.forEach(shape => {
+      shape.position.x = shape.orbitDistance * Math.sin(time + shape.orbitDistance); // space orbits based on distance
+      shape.position.z = shape.orbitDistance * Math.cos(time + shape.orbitDistance);
+    });
+    render();
+    // stats.update();
+
+  }
+  requestAnimationFrame( animate );
+
+
 }
 
 const render = () => {
@@ -325,8 +385,8 @@ const moveCameraKeyboard = (event, direction) => {
       camera.rotation.z = defaultCamera.rotation.z;
       break;
   }
-  const vector = new THREE.Vector3( 0, 0, - 1 );
-  vector.applyQuaternion( camera.quaternion );
+  const vector = new THREE.Vector3(0, 0, -1);
+  vector.applyQuaternion(camera.quaternion);
   spotLight.target.position.set(vector.x, vector.y, vector.z);
   render();
 }
@@ -341,22 +401,20 @@ const moveCameraMouse = (event) => {
   // Elegant solution to calculating position from angle
   // https://stackoverflow.com/questions/14813902/three-js-get-the-direction-in-which-the-camera-is-looking
 
-  const vector = new THREE.Vector3( 0, 0, - 1 );
-  vector.applyQuaternion( camera.quaternion );
+  const vector = new THREE.Vector3(0, 0, -1);
+  vector.applyQuaternion(camera.quaternion);
   spotLight.target.position.set(vector.x, vector.y, vector.z);
 
   render();
 }
-
 
 function onWindowResize() {
 
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 
-  renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.setSize(window.innerWidth, window.innerHeight);
   render();
 }
-
 
 main();
