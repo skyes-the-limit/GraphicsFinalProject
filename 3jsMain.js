@@ -145,13 +145,21 @@ const main = () => {
   {
   const loader = new THREE.CubeTextureLoader();
   const texture = loader.load([
-      './public/spaceImage.jpg',
-    './public/spaceImage.jpg',
-    './public/spaceImage.jpg',
-    './public/spaceImage.jpg',
-    './public/spaceImage.jpg',
-    './public/spaceImage.jpg',
+      './public/seamlessSpaceMap/left.png',
+      './public/seamlessSpaceMap/right.png',
+      './public/seamlessSpaceMap/front.png',
+      './public/seamlessSpaceMap/back.png',
+      './public/seamlessSpaceMap/top.png',
+      './public/seamlessSpaceMap/bottom.png',      
   ]);
+
+  // 'px.png',
+  // 'nx.png',
+  // 'py.png',
+  // 'ny.png',
+  // 'pz.png',
+  // 'nz.png'
+
   scene.background = texture;
   // scene.background.
   }
