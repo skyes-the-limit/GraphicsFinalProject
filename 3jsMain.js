@@ -75,55 +75,62 @@ const main = () => {
   shapes = getInputObjects(testInput);
   shapes.forEach(object => scene.add(object))
 
-  // let material = new THREE.MeshPhongMaterial( { color: 0x808080, dithering: true } );
-  //
-  // let geometry = new THREE.PlaneBufferGeometry( 2000, 2000 );
-  //
-  // let mesh = new THREE.Mesh( geometry, material );
-  // mesh.position.set( 0, 0, -30 );
-  // mesh.rotation.x = - Math.PI * 0.5;
-  // mesh.receiveShadow = true;
-  // scene.add( mesh );
-  //
-  // //
-  //
-  // material = new THREE.MeshPhongMaterial( { color: 0x4080ff, dithering: true } );
-  //
-  // geometry = new THREE.CylinderBufferGeometry( 5, 5, 2, 32, 1, false );
-  //
-  // mesh = new THREE.Mesh( geometry, material );
-  // mesh.position.set( 0, 5, 0 );
-  // mesh.castShadow = true;
-  // scene.add( mesh );
-
   // define textures for reuse
   const bmap1 = new THREE.TextureLoader().load('./public/bumpMaps/cobbleBump.jpg');
   const bmap2 = new THREE.TextureLoader().load('./public/bumpMaps/gritBump.jpg');
 
+  const texture1 = new THREE.TextureLoader().load('./public/textures/abstract1.png')
+  const texture2 = new THREE.TextureLoader().load('./public/textures/abstract2.jpg')
+
   let geometry = new THREE.BoxBufferGeometry(1, 1, 1);
-  let material = new THREE.MeshPhongMaterial({
+  let material1 = new THREE.MeshPhongMaterial({
     color: 0x00ff00,
     bumpMap : bmap1
   });
-  material.emissive.set(0xff00ff);
-  const cube = new THREE.Mesh(geometry, material);
-  // cube.translateOnAxis([-1, -1, 0], 10);
-  cube.position.set(0, 10, -20);
+  material1.emissive.set(0xff00ff);
+
+  let material2 = new THREE.MeshPhongMaterial({
+    color: 0x0000ff,
+    bumpMap : bmap2
+  });
+  material2.emissive.set(0x555555);
+
+  let material3 = new THREE.MeshPhongMaterial({
+    color: 0xff0000,
+    map: texture1
+  });
+  material3.emissive.set(0x555555);
+
+  let material4 = new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    map: texture2
+  });
+  material4.emissive.set(0x555555);
+
+  const cube = new THREE.Mesh(geometry, material1);
+  cube.position.set(-6, 5, -10);
   cube.rotation.set(0, 1, 10);
   cube.castShadow = true;
   cube.receiveShadow = true;
-  // cube.visible = false;
   scene.add(cube);
-  material = new THREE.MeshPhongMaterial({
-    color: 0xff00ff,
-    bumpMap: bmap2
-  })
 
-  const cube2 = new THREE.Mesh(geometry, material);
-  cube2.position.set(0, 11, -21);
+  const cube2 = new THREE.Mesh(geometry, material2);
+  cube2.position.set(-2, 5, -10);
   cube2.castShadow = true;
   cube2.receiveShadow = true;
   scene.add(cube2);
+
+  const cube3 = new THREE.Mesh(geometry, material3);
+  cube3.position.set(2, 5, -10);
+  cube3.castShadow = true;
+  cube3.receiveShadow = true;
+  scene.add(cube3);
+
+  const cube4 = new THREE.Mesh(geometry, material4);
+  cube4.position.set(6, 5, -10);
+  cube4.castShadow = true;
+  cube4.receiveShadow = true;
+  scene.add(cube4);
 
   camera.position.set(0, 0, 0);
 
