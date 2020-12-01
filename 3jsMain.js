@@ -96,8 +96,15 @@ const main = () => {
   // mesh.castShadow = true;
   // scene.add( mesh );
 
+  // define textures for reuse
+  const bmap1 = new THREE.TextureLoader().load('./public/bumpMaps/cobbleBump.jpg');
+  const bmap2 = new THREE.TextureLoader().load('./public/bumpMaps/gritBump.jpg');
+
   let geometry = new THREE.BoxBufferGeometry(1, 1, 1);
-  let material = new THREE.MeshPhongMaterial({color: 0x00ff00});
+  let material = new THREE.MeshPhongMaterial({
+    color: 0x00ff00,
+    bumpMap : bmap1
+  });
   material.emissive.set(0xff00ff);
   const cube = new THREE.Mesh(geometry, material);
   // cube.translateOnAxis([-1, -1, 0], 10);
@@ -107,7 +114,10 @@ const main = () => {
   cube.receiveShadow = true;
   // cube.visible = false;
   scene.add(cube);
-  material = new THREE.MeshPhongMaterial({color: 0xff00ff})
+  material = new THREE.MeshPhongMaterial({
+    color: 0xff00ff,
+    bumpMap: bmap2
+  })
 
   const cube2 = new THREE.Mesh(geometry, material);
   cube2.position.set(0, 11, -21);
@@ -313,9 +323,14 @@ function getInputObjects(input) {
         break;
     }
 
+    const bmap3 = new THREE.TextureLoader().load('./public/bumpMaps/weaveBump.jpg');
+
     // Assign the color and make it
     // Will add texturing here as necessary
-    const material = new THREE.MeshPhongMaterial({color: inputObject.color})
+    const material = new THREE.MeshPhongMaterial({
+      color: inputObject.color,
+      bumpMap: bmap3
+    })
     const object = new THREE.Mesh(geometry, material);
     object.castShadow = true;
     object.receiveShadow = true;
