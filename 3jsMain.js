@@ -165,10 +165,22 @@ const main = () => {
   //     });
 
 
-  // Load obj
-  const objLoader = new OBJLoader2();
-  objLoader.load('./public/obj/15736_Spiral_Twist_v1_NEW.obj', (root) => {
+  // Load objs
+  const spiralTwistLoader = new OBJLoader2();
+  spiralTwistLoader.load('./public/obj/15736_Spiral_Twist_v1_NEW.obj', (root) => {
     root.position.set(0, -10, -100);
+    scene.add(root);
+  });
+  const curvesLoader = new OBJLoader2();
+  curvesLoader.load('./public/obj/curves_OBJ.obj', (root) => {
+    root.scale.set(0.2, 0.2, 0.2);
+    root.position.set(50, -10, -100);
+    scene.add(root);
+  });
+  const voronoiSphereLoader = new OBJLoader2();
+  voronoiSphereLoader.load('./public/obj/voronoi_sphere.obj', (root) => {
+      root.scale.set(0.1, 0.1, 0.1);
+    root.position.set(-50, -10, -100);
     scene.add(root);
   });
 
