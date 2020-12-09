@@ -1,6 +1,6 @@
 import * as THREE from './node_modules/three/build/three.module.js';
-import {OBJLoader2} from
-      './node_modules/three/examples/jsm/loaders/OBJLoader2.js';
+import { OBJLoader2 } from
+  './node_modules/three/examples/jsm/loaders/OBJLoader2.js';
 
 let scene, camera, renderer, spotLight;
 let cameraMoveMouse = true;
@@ -11,60 +11,60 @@ let shapes = [];
 const testInput = [
   {
     type: "CUBE",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: 0, y: 0, z: -10},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: 0, y: 0, z: -10 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "CONE",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: 10, y: 0, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: 10, y: 0, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "CYLINDER",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: -10, y: 0, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: -10, y: 0, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "SPHERE",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: 20, y: 0, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: 20, y: 0, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "DIAMOND",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: -20, y: 0, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    translation: { x: -20, y: 0, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 0, y: 0, z: 0 },
   },
   {
     type: "TORUS",
-    dimensions: {x: 1, y: 1, z: 1},
+    dimensions: { x: 1, y: 1, z: 1 },
     color: 0x00ff00,
-    translation: {x: -10, y: 10, z: -20},
-    scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 90, y: 0, z: 0},
+    translation: { x: -10, y: 10, z: -20 },
+    scale: { x: 1, y: 1, z: 1 },
+    rotation: { x: 90, y: 0, z: 0 },
   },
 ]
 
 const main = () => {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75,
-      window.innerWidth / window.innerHeight, 1, 1000);
+    window.innerWidth / window.innerHeight, 1, 1000);
 
-  renderer = new THREE.WebGLRenderer({canvas: canvas});
+  renderer = new THREE.WebGLRenderer({ canvas: canvas });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -85,13 +85,13 @@ const main = () => {
   let geometry = new THREE.BoxBufferGeometry(1, 1, 1);
   let material1 = new THREE.MeshPhongMaterial({
     color: 0x00ff00,
-    bumpMap : bmap1
+    bumpMap: bmap1
   });
   material1.emissive.set(0xff00ff);
 
   let material2 = new THREE.MeshPhongMaterial({
     color: 0x0000ff,
-    bumpMap : bmap2
+    bumpMap: bmap2
   });
   material2.emissive.set(0x555555);
 
@@ -160,34 +160,18 @@ const main = () => {
 
   // Background
   {
-  const loader = new THREE.CubeTextureLoader();
-  const texture = loader.load([
+    const loader = new THREE.CubeTextureLoader();
+    const texture = loader.load([
       './public/seamlessSpaceMap/left.png',
       './public/seamlessSpaceMap/right.png',
       './public/seamlessSpaceMap/front.png',
       './public/seamlessSpaceMap/back.png',
       './public/seamlessSpaceMap/top.png',
-      './public/seamlessSpaceMap/bottom.png',      
-  ]);
+      './public/seamlessSpaceMap/bottom.png',
+    ]);
 
-  // 'px.png',
-  // 'nx.png',
-  // 'py.png',
-  // 'ny.png',
-  // 'pz.png',
-  // 'nz.png'
-
-  scene.background = texture;
-  // scene.background.
+    scene.background = texture;
   }
-  // const loader = new THREE.TextureLoader();
-  // const texture = loader.load(
-  //     './public/EquirectangularMapSpace.png',
-  //     () => {
-  //       const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
-  //       rt.fromEquirectangularTexture(renderer, texture);
-  //       scene.background = rt;
-  //     });
 
 
   // Load objs
@@ -204,7 +188,7 @@ const main = () => {
   });
   const voronoiSphereLoader = new OBJLoader2();
   voronoiSphereLoader.load('./public/obj/voronoi_sphere.obj', (root) => {
-      root.scale.set(0.1, 0.1, 0.1);
+    root.scale.set(0.1, 0.1, 0.1);
     root.position.set(-50, -10, -100);
     scene.add(root);
   });
@@ -242,23 +226,23 @@ async function onFormSubmit() {
 
   // Bind motion when text is entered
   document.addEventListener(
-      'keydown',
-      moveCameraKeyboard,
-      false
+    'keydown',
+    moveCameraKeyboard,
+    false
   )
 
   document.addEventListener(
-      'mousemove',
-      moveCameraMouse,
-      false
+    'mousemove',
+    moveCameraMouse,
+    false
   )
 
   document.addEventListener(
-      'click',
-      (event) => {
-        cameraMoveMouse = !cameraMoveMouse;
-      },
-      false
+    'click',
+    (event) => {
+      cameraMoveMouse = !cameraMoveMouse;
+    },
+    false
   )
 
   const jsonResponse = await apiCall(inputText);
@@ -273,7 +257,7 @@ async function onFormSubmit() {
 async function apiCall(inputText) {
   let credentials = "apikey:qB92x6pn98MGaei5j9TLmUhdCjmmU5eITHzJMbS2gKFM"
   let url = "https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/5942acc2-d420-4bfc-96b0-5684b5ae65d1/v3/tone?version=2017-09-21&text="
-      + inputText;
+    + inputText;
 
   const response = await fetch(url, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -308,15 +292,15 @@ function getInputObjects(input) {
     switch (inputObject.type) {
       case "CUBE":
         geometry = new THREE.BoxGeometry(inputObject.scale.x,
-            inputObject.scale.y, inputObject.scale.z, 4, 4, 4);
+          inputObject.scale.y, inputObject.scale.z, 4, 4, 4);
         break;
       case "CONE":
         geometry = new THREE.ConeGeometry(inputObject.scale.x / 2,
-            inputObject.scale.y, 16, 4);
+          inputObject.scale.y, 16, 4);
         break;
       case "CYLINDER":
         geometry = new THREE.CylinderGeometry(inputObject.scale.x / 2,
-            inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
+          inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
         break;
       case "SPHERE":
         geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 32, 32);
@@ -326,7 +310,7 @@ function getInputObjects(input) {
         break;
       case "TORUS":
         geometry = new THREE.TorusGeometry(inputObject.scale.x / 2,
-            inputObject.scale.y / 2, 8, 50);
+          inputObject.scale.y / 2, 8, 50);
         break;
     }
 
@@ -347,7 +331,7 @@ function getInputObjects(input) {
     object.rotateY(inputObject.rotation.y)
     object.rotateZ(inputObject.rotation.z)
     object.position.set(inputObject.translation.x, inputObject.translation.y,
-        inputObject.translation.z)
+      inputObject.translation.z)
     object.emotion = "neutral";
     object.orbitDistance = ((1000 * Math.random()) % 20) + 10; // At least 10 but no more than 30 away
     shapes.push(object)
@@ -385,7 +369,7 @@ const animate = () => {
     // stats.update();
 
   }
-  requestAnimationFrame( animate );
+  requestAnimationFrame(animate);
 
 
 }
@@ -397,8 +381,8 @@ const render = () => {
 
 const moveCameraKeyboard = (event, direction) => {
   let defaultCamera = {
-    translation: {x: 0, y: 0, z: 0},
-    rotation: {x: 0, y: 0, z: 0}
+    translation: { x: 0, y: 0, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 }
   }
   const step = 0.08;
   switch (event.key) {
