@@ -213,9 +213,11 @@ async function onFormSubmit() {
   let input = document.getElementById("input");
   let inputTitle = document.getElementById("inputTitle");
   let textarea = document.getElementById("textArea");
+  let controls = document.getElementById("controls");
   canvas.style["opacity"] = 1;
+  controls.style["opacity"] = 0.5;
   inputTitle.style["opacity"] = 0;
-  input.style["opacity"] = 0.25;
+  input.style["opacity"] = 0.1;
   input.style["user-select"] = "none";
   input.style["-moz-user-select"] = "none";
   input.style["-khtml-user-select"] = "none";

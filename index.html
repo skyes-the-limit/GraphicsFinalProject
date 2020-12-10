@@ -14,6 +14,16 @@
   <form action="/myaction" method="GET">
     <div>
       <canvas id="canvas"></canvas>
+      <div id="controls">
+        <h4>W: Tilt camera up</h4>
+        <h4>A: Tilt camera down</h4>
+        <h4>S: Tilt camera left</h4>
+        <h4>D: Tilt camera right</h4>
+        <h4>Q: Rotate camera clockwise</h4>
+        <h4>E: Rotate camera counter-clockwise</h4>
+        <h4>SPACE: Reset camera</h4>
+        <h4>CLICK: Freeze camera mouse movement</h4>
+      </div>
       <div id="input">
         <h1 id="inputTitle">How're you feeling today?</h1>
         <textarea id="textArea" name="textArea"></textarea>
@@ -34,18 +44,19 @@
     width: 100vw;
     height: 100vh;
     position: absolute;
-    opacity: 0.5;
+    opacity: 0.3;
   }
 
   #input {
-    width: 80vw;
-    height: 80vh;
+    width: 90vw;
+    height: 90vh;
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin: 10vh 10vw;
+    /* justify-content: center; */
+    justify-content: flex-start;
+    margin: 5vh 5vw;
   }
 
   #input h1 {
@@ -56,5 +67,22 @@
   #input textarea {
     width: 40rem;
     height: 10rem;
+  }
+
+  #controls {
+    width: 100vh;
+    height: 100vh;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 2.5vw;
+    color: #FFFFFF;
+    opacity: 0;
+  }
+
+  #controls :last-child {
+    margin-bottom: 0;
   }
 </style>
