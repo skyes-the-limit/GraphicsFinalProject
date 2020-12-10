@@ -6,6 +6,7 @@ let scene, camera, renderer, spotLight;
 let cameraMoveMouse = true;
 let textSubmitted = false;
 let shapes = [];
+let tone_ids = ["anger","fear","joy","sadness","analytical","confident","tentative"]
 
 // Sample API object for testing purposes.
 const testInput = [
@@ -249,7 +250,103 @@ async function onFormSubmit() {
 
   const jsonResponse = await apiCall(inputText);
   console.log(jsonResponse);
+  apiToShape(jsonResponse);
+  //console.log(jsonResponse.document_tone["tones"]);
 
+}
+
+function apiToShape(jsonResponse){
+  let shapesDict = {};
+  let shapeJSON = []
+  let toneArr =  jsonResponse.document_tone["tones"];
+  let shapeNames = ["CUBE","SPHERE","CYLINDER","DIAMOND","CONE","TORUS"];
+  let scale_vals = ["1","2","3","4","5","6","7","8","9","10"];
+  const RED = "0xCC0000";
+  const BLUE = "0x3D85C6";
+  const PURPLE = "0x674EA7";
+  const PINK = "0xC27BA0";
+  const GREEN = "0x6AA84F";
+  const ORANGE = "0xE69138";
+  const YELLOW = "0xFFD966";
+
+  for(let i = 0; i < toneArr.length; i++) {
+    switch (toneArr[i].tone_id) {
+      case tone_ids[0]:
+        shapesDict.type = shapeNames[0];
+        shapesDict.color = RED;
+        break;
+      case tone_ids[1]:
+        shapesDict.type = shapeNames[1];
+        shapesDict.color = BLUE;
+        break;
+      case tone_ids[2]:
+        shapesDict.type = shapeNames[2];
+        shapesDict.color = PURPLE;
+        break;
+      case tone_ids[3]:
+        shapesDict.type = shapeNames[3];
+        shapesDict.color = PINK;
+        break;
+      case tone_ids[4]:
+        shapesDict.type = shapeNames[4];
+        shapesDict.color = GREEN;
+        break;
+      case tone_ids[5]:
+        shapesDict.type = shapeNames[0];
+        shapesDict.color = ORANGE;
+        break;
+      case tone_ids[6]:
+        shapesDict.type = shapeNames[5];
+        shapesDict.color = YELLOW;
+        break;
+      default:
+        break;
+    }
+    if (toneArr[i].score <= 0.1) {
+      shapesDict.scale = {x: scale_vals[0],y:scale_vals[0],z:scale_vals[0]};
+    }
+    else if (toneArr[i].score <= 0.2) {
+      shapesDict.scale = {x: scale_vals[1],y:scale_vals[1],z:scale_vals[1]};
+    }
+
+    else if (toneArr[i].score <= 0.3) {
+      shapesDict.scale = {x: scale_vals[2],y:scale_vals[2],z:scale_vals[2]};
+    }
+
+    else if (toneArr[i].score <= 0.4) {
+      shapesDict.scale = {x: scale_vals[3],y:scale_vals[3],z:scale_vals[3]};
+    }
+
+    else if (toneArr[i].score <= 0.5) {
+      shapesDict.scale = {x: scale_vals[4],y:scale_vals[4],z:scale_vals[4]};
+    }
+
+    else if (toneArr[i].score <= 0.6) {
+      shapesDict.scale = {x: scale_vals[5],y:scale_vals[5],z:scale_vals[5]};
+    }
+
+    else if (toneArr[i].score <= 0.7) {
+      shapesDict.scale = {x: scale_vals[6],y:scale_vals[6],z:scale_vals[6]};
+    }
+
+    else if (toneArr[i].score <= 0.8) {
+      shapesDict.scale = {x: scale_vals[7],y:scale_vals[7],z:scale_vals[7]};
+    }
+
+    else if (toneArr[i].score <= 0.9) {
+      shapesDict.scale = {x: scale_vals[8],y:scale_vals[8],z:scale_vals[8]};
+    }
+
+    else if (toneArr[i].score <= 1.0) {
+      shapesDict.scale = {x: scale_vals[9],y:scale_vals[9],z:scale_vals[9]};
+    }
+    shapesDict.texture = "none";
+    shapesDict.bumpMap = "none";
+
+    //console.log(JSON.parse(JSON.stringify(shapesDict)));
+    shapeJSON.push(JSON.parse(JSON.stringify(shapesDict)))
+  }
+  console.log(shapeJSON)
 }
 
 // Possible response emotions are Anger, Fear, Joy, Sadness, Confident, Tentative, Analytical
