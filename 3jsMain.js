@@ -168,18 +168,18 @@ const main = () => {
 
   camera.position.set(0, 0, 0);
 
-  // const ambient = new THREE.AmbientLight(0xffffff, 0.1);
-  // scene.add(ambient);
-  const point = new THREE.PointLight(0xfffff, 0.05); // white right now orange is 0xea9d0d
+  const ambient = new THREE.AmbientLight(0xffffff, 0.05);
+  scene.add(ambient);
+  const point = new THREE.PointLight(0xfffff, 0.1); // white right now orange is 0xea9d0d
   point.castShadow = true;
   point.position.set(0, 20, 0); // Have shining down from above
   scene.add(point);
 
-  spotLight = new THREE.SpotLight(0xffffff, 0.5);
+  spotLight = new THREE.SpotLight(0xffffff, 0.6);
   spotLight.position.set(0, 0, 0);
   spotLight.angle = Math.PI / 30;
   spotLight.penumbra = 0.1;
-  spotLight.decay = 2;
+  // spotLight.decay = 2;
   spotLight.distance = 200;
 
   scene.add(spotLight);
@@ -216,8 +216,8 @@ const main = () => {
       // side: THREE.DoubleSide,
       // });
       // const surroundMesh = new THREE.Mesh(surroundingGeo, surroundMat);
-      floorMat.emissive = 0x00000;
-      floorMat.emissiveIntensity = 3;
+      // floorMat.emissive = 0x00000;
+      // floorMat.emissiveIntensity = 10;
       floorMat.map = result[5];
       const floorMesh = new THREE.Mesh(floorGeo, floorMat);
       floorMat.map = result[4];
