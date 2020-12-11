@@ -190,71 +190,74 @@ const main = () => {
   // Background
   {
     const loader = new THREE.TextureLoader();
-    // const texture = Promise.all(
-    //     [loader.load('./public/seamlessSpaceMap/left.png'),
-    //       loader.load('./public/seamlessSpaceMap/right.png'),
-    //       loader.load('./public/seamlessSpaceMap/front.png'),
-    //       loader.load('./public/seamlessSpaceMap/back.png'),
-    //       loader.load('./public/seamlessSpaceMap/top.png'),
-    //       loader.load('./public/seamlessSpaceMap/bottom.png')], (resolve, reject) => {
-    //   resolve(texture);
-    // }).then(result => {
-    //   const maxDistance = 35;
-    //   const floorSize = 70;
-    //   const floorGeo = new THREE.PlaneBufferGeometry
-    //   (floorSize, floorSize);
-    //   const floorMat = new THREE.MeshPhongMaterial({
-    //     // map: texture[0],
-    //     // side: THREE.DoubleSide,
-    //   });
-    //   // const surroundingGeo = new THREE.BoxGeometry(70, 70);
-    //   // const surroundMat = new THREE.MeshPhongMaterial({
-    //   // map: texture,
-    //   // side: THREE.DoubleSide,
-    //   // });
-    //   // const surroundMesh = new THREE.Mesh(surroundingGeo, surroundMat);
-    //   floorMat.map = result[0];
-    //   const floorMesh = new THREE.Mesh(floorGeo, floorMat);
-    //   const topMesh = new THREE.Mesh(floorGeo, floorMat);
-    //   const wallMeshRight = new THREE.Mesh(floorGeo, floorMat);
-    //   const wallMeshLeft = new THREE.Mesh(floorGeo, floorMat);
-    //   const wallMeshFront = new THREE.Mesh(floorGeo, floorMat);
-    //   const wallMeshBack = new THREE.Mesh(floorGeo, floorMat);
-    //
-    //   wallMeshRight.texture = texture[1];
-    //   wallMeshRight.position.x = maxDistance;
-    //   wallMeshRight.rotation.y = Math.PI * -.5;
-    //   wallMeshRight.receiveShadow = true;
-    //
-    //   wallMeshLeft.position.x = -maxDistance;
-    //   wallMeshLeft.rotation.y = Math.PI * .5;
-    //   wallMeshLeft.receiveShadow = true;
-    //
-    //   wallMeshFront.position.z = -30;
-    //   wallMeshFront.rotation.y = 0;
-    //   wallMeshFront.receiveShadow = true;
-    //
-    //   wallMeshBack.position.z = maxDistance;
-    //   wallMeshBack.rotation.y = -Math.PI;
-    //   wallMeshBack.receiveShadow = true;
-    //
-    //   floorMesh.receiveShadow = true;
-    //   floorMesh.rotation.x = Math.PI * -.5;
-    //   floorMesh.position.y = -maxDistance;
-    //
-    //   topMesh.rotation.x = Math.PI * .5;
-    //   topMesh.position.y = maxDistance;
-    //
-    //   scene.add(floorMesh);
-    //   scene.add(topMesh);
-    //   scene.add(wallMeshFront);
-    //   scene.add(wallMeshBack);
-    //   console.log(wallMeshFront);
-    //   scene.add(wallMeshRight);
-    //   scene.add(wallMeshLeft);
-    //   // result in array of textures
-    // });
-    const textureFloor = loader.load('./public/seamlessSpaceMap/bottom.png');
+    Promise.all(
+        [loader.load('./public/seamlessSpaceMap/left.png'),
+          loader.load('./public/seamlessSpaceMap/right.png'),
+          loader.load('./public/seamlessSpaceMap/front.png'),
+          loader.load('./public/seamlessSpaceMap/back.png'),
+          loader.load('./public/seamlessSpaceMap/top.png'),
+          loader.load('./public/seamlessSpaceMap/bottom.png')], (resolve, reject) => {
+      resolve(texture);
+    }).then(result => {
+
+
+      // Solid Background
+      const maxDistance = 35;
+      const floorSize = 70;
+      const floorGeo = new THREE.PlaneBufferGeometry
+      (floorSize, floorSize);
+      const floorMat = new THREE.MeshPhongMaterial({
+        // map: texture[0],
+        // side: THREE.FrontSide,
+      });
+      // const surroundingGeo = new THREE.BoxGeometry(70, 70);
+      // const surroundMat = new THREE.MeshPhongMaterial({
+      // map: texture,
+      // side: THREE.DoubleSide,
+      // });
+      // const surroundMesh = new THREE.Mesh(surroundingGeo, surroundMat);
+      floorMat.emissive = 0x00000;
+      floorMat.emissiveIntensity = 3;
+      floorMat.map = result[5];
+      const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+      floorMat.map = result[4];
+      const topMesh = new THREE.Mesh(floorGeo, floorMat);
+      floorMat.map = result[1];
+      const wallMeshRight = new THREE.Mesh(floorGeo, floorMat);
+      floorMat.map = result[0];
+      const wallMeshLeft = new THREE.Mesh(floorGeo, floorMat);
+      floorMat.map = result[2];
+      const wallMeshFront = new THREE.Mesh(floorGeo, floorMat);
+      floorMat.map = result[3];
+      const wallMeshBack = new THREE.Mesh(floorGeo, floorMat);
+      wallMeshRight.position.x = maxDistance;
+      wallMeshRight.rotation.y = Math.PI * -.5;
+      wallMeshRight.receiveShadow = true;
+      wallMeshLeft.position.x = -maxDistance;
+      wallMeshLeft.rotation.y = Math.PI * .5;
+      wallMeshLeft.receiveShadow = true;
+      wallMeshFront.position.z = -30;
+      wallMeshFront.rotation.y = 0;
+      wallMeshFront.receiveShadow = true;
+      wallMeshBack.position.z = maxDistance;
+      wallMeshBack.rotation.y = -Math.PI;
+      wallMeshBack.receiveShadow = true;
+      floorMesh.receiveShadow = true;
+      floorMesh.rotation.x = Math.PI * -.5;
+      floorMesh.position.y = -maxDistance;
+      topMesh.rotation.x = Math.PI * .5;
+      topMesh.position.y = maxDistance;
+      scene.add(floorMesh);
+      scene.add(topMesh);
+      // scene.add(wallMeshFront); // Look out into space from trapped in a cube
+      scene.add(wallMeshBack);
+      console.log(wallMeshFront);
+      scene.add(wallMeshRight);
+      scene.add(wallMeshLeft);
+      // scene.add(surroundMesh);
+
+    });
+    // const textureFloor = loader.load('./public/seamlessSpaceMap/bottom.png');
     const cubeLoader = new THREE.CubeTextureLoader();
     const texture = cubeLoader.load([
       './public/seamlessSpaceMap/left.png',
@@ -265,53 +268,6 @@ const main = () => {
       './public/seamlessSpaceMap/bottom.png'
     ]);
 
-    // Solid Background
-    const maxDistance = 35;
-    const floorSize = 70;
-    const floorGeo = new THREE.PlaneBufferGeometry
-    (floorSize, floorSize);
-    const floorMat = new THREE.MeshPhongMaterial({
-      // map: texture[0],
-      // side: THREE.FrontSide,
-    });
-    // const surroundingGeo = new THREE.BoxGeometry(70, 70);
-    // const surroundMat = new THREE.MeshPhongMaterial({
-      // map: texture,
-      // side: THREE.DoubleSide,
-    // });
-    // const surroundMesh = new THREE.Mesh(surroundingGeo, surroundMat);
-    floorMat.map = textureFloor;
-    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
-    const topMesh = new THREE.Mesh(floorGeo, floorMat);
-    const wallMeshRight = new THREE.Mesh(floorGeo, floorMat);
-    const wallMeshLeft = new THREE.Mesh(floorGeo, floorMat);
-    const wallMeshFront = new THREE.Mesh(floorGeo, floorMat);
-    const wallMeshBack = new THREE.Mesh(floorGeo, floorMat);
-    wallMeshRight.position.x = maxDistance;
-    wallMeshRight.rotation.y = Math.PI * -.5;
-    wallMeshRight.receiveShadow = true;
-    wallMeshLeft.position.x = -maxDistance;
-    wallMeshLeft.rotation.y = Math.PI * .5;
-    wallMeshLeft.receiveShadow = true;
-    wallMeshFront.position.z = -30;
-    wallMeshFront.rotation.y = 0;
-    wallMeshFront.receiveShadow = true;
-    wallMeshBack.position.z = maxDistance;
-    wallMeshBack.rotation.y = -Math.PI;
-    wallMeshBack.receiveShadow = true;
-    floorMesh.receiveShadow = true;
-    floorMesh.rotation.x = Math.PI * -.5;
-    floorMesh.position.y = -maxDistance;
-    topMesh.rotation.x = Math.PI * .5;
-    topMesh.position.y = maxDistance;
-    scene.add(floorMesh);
-    scene.add(topMesh);
-    // scene.add(wallMeshFront); // Look out into space from trapped in a cube
-    scene.add(wallMeshBack);
-    console.log(wallMeshFront);
-    scene.add(wallMeshRight);
-    scene.add(wallMeshLeft);
-    // scene.add(surroundMesh);
 
     scene.background = texture;
   }
