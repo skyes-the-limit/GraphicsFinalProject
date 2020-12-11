@@ -1,12 +1,15 @@
 import * as THREE from './node_modules/three/build/three.module.js';
 import { OBJLoader2 } from
   './node_modules/three/examples/jsm/loaders/OBJLoader2.js';
+import {OBJLoader2Parallel} from "./node_modules/three/examples/jsm/loaders/OBJLoader2Parallel.js";
+import {Euler} from "./node_modules/three/src/math/Euler.js";
 
 let scene, camera, renderer, spotLight;
 let cameraMoveMouse = true;
 let textSubmitted = false;
 let shapes = [];
 let tone_ids = ["anger","fear","joy","sadness","analytical","confident","tentative"]
+let animating = true;
 
 // Sample API object for testing purposes.
 const testInput = [
@@ -59,6 +62,32 @@ const testInput = [
     rotation: { x: 90, y: 0, z: 0 },
   },
 ]
+
+const moveCamera = (xChange, yChange) => {
+  const minPolarAngle = 0;
+  const maxPolarAngle = Math.PI;
+  let euler = new Euler( 0, 0, 0, 'YXZ' );
+
+  const PI_2 = Math.PI / 2;
+  euler.setFromQuaternion( camera.quaternion );
+
+  euler.y -= xChange * 0.002;
+  euler.x -= yChange * 0.002;
+
+  euler.x = Math.max( PI_2 - maxPolarAngle, Math.min( PI_2 - minPolarAngle, euler.x ) );
+
+  camera.quaternion.setFromEuler( euler );
+
+  // Elegant solution to calculating position from angle
+  // https://stackoverflow.com/questions/14813902/three-js-get-the-direction-in-which-the-camera-is-looking
+
+  const vector = new THREE.Vector3(0, 0, -1);
+  vector.applyQuaternion(camera.quaternion);
+  spotLight.target.position.set(vector.x, vector.y, vector.z);
+
+  render();
+
+}
 
 const main = () => {
   scene = new THREE.Scene();
@@ -137,13 +166,13 @@ const main = () => {
 
   // const ambient = new THREE.AmbientLight(0xffffff, 0.1);
   // scene.add(ambient);
-  const point = new THREE.PointLight(0xfffff, 0.2); // white right now orange is 0xea9d0d
+  const point = new THREE.PointLight(0xfffff, 0.05); // white right now orange is 0xea9d0d
   point.position.set(0, 20, 0); // Have shining down from above
   scene.add(point);
 
-  spotLight = new THREE.SpotLight(0xffffff, 1);
+  spotLight = new THREE.SpotLight(0xffffff, 0.5);
   spotLight.position.set(0, 0, 0);
-  spotLight.angle = Math.PI / 10;
+  spotLight.angle = Math.PI / 50;
   spotLight.penumbra = 0.1;
   spotLight.decay = 2;
   spotLight.distance = 200;
@@ -171,24 +200,43 @@ const main = () => {
       './public/seamlessSpaceMap/bottom.png',
     ]);
 
+    // Solid Background
+    const floorSize = 40;
+    const floorGeo = new THREE.PlaneBufferGeometry
+    (floorSize, floorSize);
+    const floorMat = new THREE.MeshPhongMaterial({
+      // map: texture[0],
+      // side: THREE.DoubleSide,
+    });
+    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+    const wallMesh = new  THREE.Mesh(floorGeo, floorMat);
+    wallMesh.position.x = 40;
+    wallMesh.rotation.y = Math.PI * -.5;
+    wallMesh.receiveShadow = true;
+    floorMesh.receiveShadow = true;
+    floorMesh.rotation.x = Math.PI * -.5;
+    floorMesh.position.y = -40;
+    scene.add(floorMesh);
+    scene.add(wallMesh);
+
     scene.background = texture;
   }
 
 
   // Load objs
-  const spiralTwistLoader = new OBJLoader2();
+  const spiralTwistLoader = new OBJLoader2Parallel();
   spiralTwistLoader.load('./public/obj/15736_Spiral_Twist_v1_NEW.obj', (root) => {
     root.position.set(0, -10, -100);
     scene.add(root);
   });
-  const curvesLoader = new OBJLoader2();
-  curvesLoader.load('./public/obj/curves_OBJ.obj', (root) => {
+  const curvesLoader = new OBJLoader2Parallel();
+  curvesLoader.load('./public/obj/Compressed_curves.obj', (root) => {
     root.scale.set(0.2, 0.2, 0.2);
     root.position.set(50, -10, -100);
     scene.add(root);
   });
-  const voronoiSphereLoader = new OBJLoader2();
-  voronoiSphereLoader.load('./public/obj/voronoi_sphere.obj', (root) => {
+  const voronoiSphereLoader = new OBJLoader2Parallel();
+  voronoiSphereLoader.load('./public/obj/Compressed_voronoi_sphere.obj', (root) => {
     root.scale.set(0.1, 0.1, 0.1);
     root.position.set(-50, -10, -100);
     scene.add(root);
@@ -243,10 +291,21 @@ async function onFormSubmit() {
   document.addEventListener(
     'click',
     (event) => {
-      cameraMoveMouse = !cameraMoveMouse;
+      const mouse3D = new THREE.Vector3(
+          (event.clientX / window.innerWidth) * 2 - 1,
+          -(event.clientY / window.innerHeight) * 2 + 1,
+          0.5);
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse3D, camera);
+      const intersects = raycaster.intersectObjects(shapes);
+      if (intersects.length > 0) {
+        // intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
+        let emotionBox = document.getElementById("emotion");
+        emotionBox.innerHTML = `<h4>${intersects[0].object.emotion}</h4>`;
+      }
     },
-    false
-  )
+      false
+  );
 
   const jsonResponse = await apiCall(inputText);
   console.log(jsonResponse);
@@ -429,7 +488,7 @@ function getInputObjects(input) {
     object.rotateX(inputObject.rotation.x)
     object.rotateY(inputObject.rotation.y)
     object.rotateZ(inputObject.rotation.z)
-    object.position.set(inputObject.translation.x, inputObject.translation.y,
+    object.position.set(inputObject.translation.x, ((1000 * Math.random()) % 26) - 13, // Y between -13 and 13
       inputObject.translation.z)
     object.emotion = "neutral";
     object.orbitDistance = ((1000 * Math.random()) % 20) + 10; // At least 10 but no more than 30 away
@@ -459,7 +518,7 @@ const animate = () => {
     last = time;
     // console.log("test")
 
-    time *= 0.0003;
+    time *= 0.0002;
     shapes.forEach(shape => {
       shape.position.x = shape.orbitDistance * Math.sin(time + shape.orbitDistance); // space orbits based on distance
       shape.position.z = shape.orbitDistance * Math.cos(time + shape.orbitDistance);
@@ -468,7 +527,9 @@ const animate = () => {
     // stats.update();
 
   }
-  requestAnimationFrame(animate);
+  if (animating) {
+    requestAnimationFrame(animate);
+  }
 
 
 }
@@ -483,54 +544,52 @@ const moveCameraKeyboard = (event, direction) => {
     translation: { x: 0, y: 0, z: 0 },
     rotation: { x: 0, y: 0, z: 0 }
   }
-  const step = 0.08;
+  const step = 50;
   switch (event.key) {
-    case ("d"):
-      camera.rotation.y -= step;
-      break;
     case ("w"):
-      camera.rotation.x += step;
+      moveCamera(0, -step);
       break;
-    case ("a"):
-      camera.rotation.y += step;
+    case ("d"):
+      moveCamera(step, 0);
+      // camera.rotation.x += step;
       break;
     case ("s"):
-      camera.rotation.x -= step;
+      moveCamera(0, step);
+      // camera.rotation.y += step;
+      break;
+    case ("a"):
+      moveCamera(-step, 0);
+      // camera.rotation.x -= step;
       break;
 
     case ("q"):
-      camera.rotation.z -= step;
+      camera.rotation.z -= step / 500;
       break;
     case ("e"):
-      camera.rotation.z += step;
+      camera.rotation.z += step / 500;
       break;
     case (" "):
       camera.rotation.x = defaultCamera.rotation.x;
       camera.rotation.y = defaultCamera.rotation.y;
       camera.rotation.z = defaultCamera.rotation.z;
       break;
+    case ("p"):
+      animating = !animating;
+      animate();
+    case("Escape"):
+      cameraMoveMouse = !cameraMoveMouse;
+      break;
   }
-  const vector = new THREE.Vector3(0, 0, -1);
-  vector.applyQuaternion(camera.quaternion);
-  spotLight.target.position.set(vector.x, vector.y, vector.z);
+  // const vector = new THREE.Vector3(0, 0, -1);
+  // vector.applyQuaternion(camera.quaternion);
+  // spotLight.target.position.set(vector.x, vector.y, vector.z);
   render();
 }
 
 const moveCameraMouse = (event) => {
   if (cameraMoveMouse) {
-    camera.rotation.y -= event.movementX / 200;
-    camera.rotation.x -= event.movementY / 200;
-    camera.rotation.y = camera.rotation.y % (2 * Math.PI);
-    camera.rotation.x = camera.rotation.x % (2 * Math.PI);
+    moveCamera(event.movementX, event.movementY);
   }
-  // Elegant solution to calculating position from angle
-  // https://stackoverflow.com/questions/14813902/three-js-get-the-direction-in-which-the-camera-is-looking
-
-  const vector = new THREE.Vector3(0, 0, -1);
-  vector.applyQuaternion(camera.quaternion);
-  spotLight.target.position.set(vector.x, vector.y, vector.z);
-
-  render();
 }
 
 function onWindowResize() {

@@ -11,7 +11,6 @@
 </head>
 
 <body>
-  <form action="/myaction" method="GET">
     <div>
       <canvas id="canvas"></canvas>
       <div id="controls">
@@ -22,14 +21,18 @@
         <h4>Q: Rotate camera clockwise</h4>
         <h4>E: Rotate camera counter-clockwise</h4>
         <h4>SPACE: Reset camera</h4>
-        <h4>CLICK: Freeze camera mouse movement</h4>
+        <h4>ESCAPE: Freeze camera mouse movement</h4>
+        <h4>P: Pause the animation</h4>
+        <h4>CLICK: View shape emotion</h4>
       </div>
       <div id="input">
         <h1 id="inputTitle">How're you feeling today?</h1>
         <textarea id="textArea" name="textArea"></textarea>
       </div>
+      <div id="emotion">
+        <h4></h4>
+      </div>
     </div>
-  </form>
 </body>
 
 </html>
@@ -85,4 +88,15 @@
   #controls :last-child {
     margin-bottom: 0;
   }
+
+  #emotion {
+    position: absolute;
+    top: 50vh;
+    text-align: center;
+    width: 100%;
+    height: 100px;
+    color: #FFFFFF;
+    opacity: 0.5;
+  }
+
 </style>
