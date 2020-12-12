@@ -94,8 +94,8 @@ const main = () => {
   renderer.shadowMap.type = THREE.BasicShadowMap;
   renderer.outputEncoding = THREE.sRGBEncoding;
 
-  // Add all of the API objects to the scene
-  shapes = createObjects(testInput);
+  // Add test API objects to the scene
+  let shapes = createObjects(testInput);
   shapes.forEach(object => scene.add(object))
 
   // define textures for reuse
@@ -351,11 +351,14 @@ async function onFormSubmit() {
       false
   );
 
+  // Get response
   const jsonResponse = await apiCall(inputText);
   console.log(jsonResponse);
-  apiToShape(jsonResponse);
-  //console.log(jsonResponse.document_tone["tones"]);
 
+  // Convert to rendered shapes
+  const shapeJSON = apiToShape(jsonResponse);
+  const objects = createObjects(shapeJSON);
+  objects.forEach(object => scene.add(object))
 }
 
 function apiToShape(jsonResponse) {
@@ -363,14 +366,13 @@ function apiToShape(jsonResponse) {
   let shapeJSON = []
   let toneArr = jsonResponse.document_tone["tones"];
   let shapeNames = ["CUBE", "SPHERE", "CYLINDER", "DIAMOND", "CONE", "TORUS"];
-  let scale_vals = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-  const RED = "0xCC0000";
-  const BLUE = "0x3D85C6";
-  const PURPLE = "0x674EA7";
-  const PINK = "0xC27BA0";
-  const GREEN = "0x6AA84F";
-  const ORANGE = "0xE69138";
-  const YELLOW = "0xFFD966";
+  const RED = 0xCC0000;
+  const BLUE = 0x3D85C6;
+  const PURPLE = 0x674EA7;
+  const PINK = 0xC27BA0;
+  const GREEN = 0x6AA84F;
+  const ORANGE = 0xE69138;
+  const YELLOW = 0xFFD966;
 
   for (let i = 0; i < toneArr.length; i++) {
     switch (toneArr[i].tone_id) {
@@ -405,29 +407,12 @@ function apiToShape(jsonResponse) {
       default:
         break;
     }
-    if (toneArr[i].score <= 0.1) {
-      shapesDict.scale = {x: scale_vals[0], y: scale_vals[0], z: scale_vals[0]};
-    } else if (toneArr[i].score <= 0.2) {
-      shapesDict.scale = {x: scale_vals[1], y: scale_vals[1], z: scale_vals[1]};
-    } else if (toneArr[i].score <= 0.3) {
-      shapesDict.scale = {x: scale_vals[2], y: scale_vals[2], z: scale_vals[2]};
-    } else if (toneArr[i].score <= 0.4) {
-      shapesDict.scale = {x: scale_vals[3], y: scale_vals[3], z: scale_vals[3]};
-    } else if (toneArr[i].score <= 0.5) {
-      shapesDict.scale = {x: scale_vals[4], y: scale_vals[4], z: scale_vals[4]};
-    } else if (toneArr[i].score <= 0.6) {
-      shapesDict.scale = {x: scale_vals[5], y: scale_vals[5], z: scale_vals[5]};
-    } else if (toneArr[i].score <= 0.7) {
-      shapesDict.scale = {x: scale_vals[6], y: scale_vals[6], z: scale_vals[6]};
-    } else if (toneArr[i].score <= 0.8) {
-      shapesDict.scale = {x: scale_vals[7], y: scale_vals[7], z: scale_vals[7]};
-    } else if (toneArr[i].score <= 0.9) {
-      shapesDict.scale = {x: scale_vals[8], y: scale_vals[8], z: scale_vals[8]};
-    } else if (toneArr[i].score <= 1.0) {
-      shapesDict.scale = {x: scale_vals[9], y: scale_vals[9], z: scale_vals[9]};
-    }
+
+    const size = toneArr[i].score * 5
+    shapesDict.scale = {x: size, y: size, z: size};
     shapesDict.texture = "none";
     shapesDict.bumpMap = "none";
+    shapeJSON.push(JSON.parse(JSON.stringify(shapesDict)))
   }
  
   return shapeJSON
@@ -478,83 +463,83 @@ function createObjects(shapesList) {
   const texture2 = new THREE.TextureLoader().load(
       './public/textures/abstract2.jpg')
 
-    shapesList.forEach(shape => {
-    // Get the object type and size
-    let geometry = new THREE.Geometry() // Default will be an empty object
-    switch (shape.type) {
-      case "CUBE":
-        geometry = new THREE.BoxGeometry(shape.scale.x,
-          shape.scale.y, shape.scale.z, 4, 4, 4);
-        break;
-      case "CONE":
-        geometry = new THREE.ConeGeometry(shape.scale.x / 2,
-          shape.scale.y, 16, 4);
-        break;
-      case "CYLINDER":
-        geometry = new THREE.CylinderGeometry(shape.scale.x / 2,
-          shape.scale.x / 2, shape.scale.y, 16, 4);
-        break;
-      case "SPHERE":
-        geometry = new THREE.SphereGeometry(shape.scale.x / 2, 32, 32);
-        break;
-      case "DIAMOND":
-        geometry = new THREE.SphereGeometry(shape.scale.x / 2, 4, 2);
-        break;
-      case "TORUS":
-        geometry = new THREE.TorusGeometry(shape.scale.x / 2,
-          shape.scale.y / 2, 8, 50);
-        break;
-    }
+  shapesList.forEach(shape => {
+  // Get the object type and size
+  let geometry = new THREE.Geometry() // Default will be an empty object
+  switch (shape.type) {
+    case "CUBE":
+      geometry = new THREE.BoxGeometry(shape.scale.x,
+        shape.scale.y, shape.scale.z, 4, 4, 4);
+      break;
+    case "CONE":
+      geometry = new THREE.ConeGeometry(shape.scale.x / 2,
+        shape.scale.y, 16, 4);
+      break;
+    case "CYLINDER":
+      geometry = new THREE.CylinderGeometry(shape.scale.x / 2,
+        shape.scale.x / 2, shape.scale.y, 16, 4);
+      break;
+    case "SPHERE":
+      geometry = new THREE.SphereGeometry(shape.scale.x / 2, 32, 32);
+      break;
+    case "DIAMOND":
+      geometry = new THREE.SphereGeometry(shape.scale.x / 2, 4, 2);
+      break;
+    case "TORUS":
+      geometry = new THREE.TorusGeometry(shape.scale.x / 2,
+        shape.scale.y / 2, 8, 50);
+      break;
+  }
 
-    // Set random position
-    geometry.translate (
-      Math.round(Math.random() * 30) - 15, // X between -15 and 15
-      Math.round(Math.random() * 30) - 15, // Y between -13 and 15
-      Math.round(Math.random() * 10) - 5  // Z between -10 and 10)
-    )
+  // Set random position
+  geometry.translate (
+    Math.round(Math.random() * 40) - 20, // X between -20 and 20
+    Math.round(Math.random() * 40) - 20, // Y between -20 and 20
+    Math.round(Math.random() * -20) - 10  // Z between -30 and -10)
+  )
 
-    // Set bump map and texture maps as necessary
-    let objectBumpMap = null;
-    switch (shape.bumpMap) {
-      case "none":
-        break;
-      case "bmap1":
-        objectBumpMap = bmap1;
-        break;
-      case "bmap2":
-        objectBumpMap = bmap2;
-        break;
-    }
+  // Set bump map and texture maps as necessary
+  let objectBumpMap = null;
+  switch (shape.bumpMap) {
+    case "none":
+      break;
+    case "bmap1":
+      objectBumpMap = bmap1;
+      break;
+    case "bmap2":
+      objectBumpMap = bmap2;
+      break;
+  }
 
-    let objectMap = null;
-    switch (shape.map) {
-      case "none":
-        break;
-      case "texture1":
-        objectMap = texture1;
-        break;
-      case "texture2":
-        objectMap = texture2;
-        break;
-    }
+  let objectMap = null;
+  switch (shape.texture) {
+    case "none":
+      break;
+    case "texture1":
+      objectMap = texture1;
+      break;
+    case "texture2":
+      objectMap = texture2;
+      break;
+  }
 
-    const material = new THREE.MeshPhongMaterial({
-      color: shape.color,
-      map: objectMap,
-      bumpMap: objectBumpMap
-    });
+  const material = new THREE.MeshPhongMaterial({
+    color: shape.color,
+    map: objectMap,
+    bumpMap: objectBumpMap
+  });
 
-    // Create 3js object
-    const object = new THREE.Mesh(geometry, material);
-    object.castShadow = true;
-    object.receiveShadow = true;
+  // Create 3js object
+  const object = new THREE.Mesh(geometry, material);
+  object.castShadow = true;
+  object.receiveShadow = true;
 
-    // Assign additional properties for animation and selection
-    object.emotion = "neutral";
-    object.orbitDistance = Math.round(Math.random() * 20) + 10; // At least 10 but no more than 30 away
+  // Assign additional properties for animation and selection
+  object.emotion = "neutral";
+  object.orbitDistance = Math.round(Math.random() * 20) + 10; // At least 10 but no more than 30 away
 
-    // Finalize object
-    objects.push(object)
+  // Finalize object
+  objects.push(object)
   });
 
   return objects;
