@@ -14,51 +14,45 @@ let animating = true;
 const testInput = [
   {
     type: "CUBE",
-    dimensions: {x: 1, y: 1, z: 1},
-    color: 0x00ff00,
-    translation: {x: 0, y: 0, z: -10},
+    color: 0xff0000,
     scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    texture: "texture1",
+    bumpMap: "none"
   },
   {
     type: "CONE",
-    dimensions: {x: 1, y: 1, z: 1},
     color: 0x00ff00,
-    translation: {x: 10, y: 0, z: -20},
     scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    texture: "none",
+    bumpMap: "none"
   },
   {
     type: "CYLINDER",
-    dimensions: {x: 1, y: 1, z: 1},
     color: 0x00ff00,
-    translation: {x: -10, y: 0, z: -20},
     scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    texture: "texture1",
+    bumpMap: "none"
   },
   {
     type: "SPHERE",
-    dimensions: {x: 1, y: 1, z: 1},
     color: 0x00ff00,
-    translation: {x: 20, y: 0, z: -20},
     scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    texture: "texture2",
+    bumpMap: "none"
   },
   {
     type: "DIAMOND",
-    dimensions: {x: 1, y: 1, z: 1},
-    color: 0x00ff00,
-    translation: {x: -20, y: 0, z: -20},
+    color: 0x0000ff,
     scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 0, y: 0, z: 0},
+    texture: "none",
+    bumpMap: "bmap2"
   },
   {
     type: "TORUS",
-    dimensions: {x: 1, y: 1, z: 1},
-    color: 0x00ff00,
-    translation: {x: -10, y: 10, z: -20},
+    color: 0x0000ff,
     scale: {x: 1, y: 1, z: 1},
-    rotation: {x: 90, y: 0, z: 0},
+    texture: "none",
+    bumpMap: "none"
   },
 ]
 
@@ -101,8 +95,7 @@ const main = () => {
   renderer.outputEncoding = THREE.sRGBEncoding;
 
   // Add all of the API objects to the scene
-  // This is an empty array for now because it will break the scene
-  shapes = getInputObjects(testInput);
+  shapes = createObjects(testInput);
   shapes.forEach(object => scene.add(object))
 
   // define textures for reuse
@@ -435,11 +428,9 @@ function apiToShape(jsonResponse) {
     }
     shapesDict.texture = "none";
     shapesDict.bumpMap = "none";
-
-    //console.log(JSON.parse(JSON.stringify(shapesDict)));
-    shapeJSON.push(JSON.parse(JSON.stringify(shapesDict)))
   }
-  console.log(shapeJSON)
+ 
+  return shapeJSON
 }
 
 // Possible response emotions are Anger, Fear, Joy, Sadness, Confident, Tentative, Analytical
@@ -473,65 +464,100 @@ async function apiCall(inputText) {
 
 }
 
-// Get input from API call
-// I have no clue how this is supposed to work for now, so I'm going to assume
-// it returns an array of an object which has a type, color, size, position, and rotation
-function getInputObjects(input) {
-  let shapes = []
-  input.forEach(inputObject => {
+// Return 3js objects created from JSON shape list
+function createObjects(shapesList) {
+  let objects = []
+
+  // Preload all textures to avoid repeat loads
+  const bmap1 = new THREE.TextureLoader().load(
+      './public/bumpMaps/cobbleBump.jpg');
+  const bmap2 = new THREE.TextureLoader().load(
+      './public/bumpMaps/gritBump.jpg');
+  const texture1 = new THREE.TextureLoader().load(
+      './public/textures/abstract1.png')
+  const texture2 = new THREE.TextureLoader().load(
+      './public/textures/abstract2.jpg')
+
+    shapesList.forEach(shape => {
     // Get the object type and size
     let geometry = new THREE.Geometry() // Default will be an empty object
-    switch (inputObject.type) {
+    switch (shape.type) {
       case "CUBE":
-        geometry = new THREE.BoxGeometry(inputObject.scale.x,
-            inputObject.scale.y, inputObject.scale.z, 4, 4, 4);
+        geometry = new THREE.BoxGeometry(shape.scale.x,
+          shape.scale.y, shape.scale.z, 4, 4, 4);
         break;
       case "CONE":
-        geometry = new THREE.ConeGeometry(inputObject.scale.x / 2,
-            inputObject.scale.y, 16, 4);
+        geometry = new THREE.ConeGeometry(shape.scale.x / 2,
+          shape.scale.y, 16, 4);
         break;
       case "CYLINDER":
-        geometry = new THREE.CylinderGeometry(inputObject.scale.x / 2,
-            inputObject.scale.x / 2, inputObject.scale.y, 16, 4);
+        geometry = new THREE.CylinderGeometry(shape.scale.x / 2,
+          shape.scale.x / 2, shape.scale.y, 16, 4);
         break;
       case "SPHERE":
-        geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 32, 32);
+        geometry = new THREE.SphereGeometry(shape.scale.x / 2, 32, 32);
         break;
       case "DIAMOND":
-        geometry = new THREE.SphereGeometry(inputObject.scale.x / 2, 4, 2);
+        geometry = new THREE.SphereGeometry(shape.scale.x / 2, 4, 2);
         break;
       case "TORUS":
-        geometry = new THREE.TorusGeometry(inputObject.scale.x / 2,
-            inputObject.scale.y / 2, 8, 50);
+        geometry = new THREE.TorusGeometry(shape.scale.x / 2,
+          shape.scale.y / 2, 8, 50);
         break;
     }
 
-    const bmap3 = new THREE.TextureLoader().load(
-        './public/bumpMaps/weaveBump.jpg');
+    // Set random position
+    geometry.translate (
+      Math.round(Math.random() * 30) - 15, // X between -15 and 15
+      Math.round(Math.random() * 30) - 15, // Y between -13 and 15
+      Math.round(Math.random() * 10) - 5  // Z between -10 and 10)
+    )
 
-    // Assign the color and make it
-    // Will add texturing here as necessary
+    // Set bump map and texture maps as necessary
+    let objectBumpMap = null;
+    switch (shape.bumpMap) {
+      case "none":
+        break;
+      case "bmap1":
+        objectBumpMap = bmap1;
+        break;
+      case "bmap2":
+        objectBumpMap = bmap2;
+        break;
+    }
+
+    let objectMap = null;
+    switch (shape.map) {
+      case "none":
+        break;
+      case "texture1":
+        objectMap = texture1;
+        break;
+      case "texture2":
+        objectMap = texture2;
+        break;
+    }
+
     const material = new THREE.MeshPhongMaterial({
-      color: inputObject.color,
-      bumpMap: bmap3
-    })
+      color: shape.color,
+      map: objectMap,
+      bumpMap: objectBumpMap
+    });
+
+    // Create 3js object
     const object = new THREE.Mesh(geometry, material);
     object.castShadow = true;
     object.receiveShadow = true;
 
-    // Initialize rotation, and position
-    object.rotateX(inputObject.rotation.x)
-    object.rotateY(inputObject.rotation.y)
-    object.rotateZ(inputObject.rotation.z)
-    object.position.set(inputObject.translation.x,
-        ((1000 * Math.random()) % 26) - 13, // Y between -13 and 13
-        inputObject.translation.z)
+    // Assign additional properties for animation and selection
     object.emotion = "neutral";
-    object.orbitDistance = ((1000 * Math.random()) % 20) + 10; // At least 10 but no more than 30 away
-    shapes.push(object)
+    object.orbitDistance = Math.round(Math.random() * 20) + 10; // At least 10 but no more than 30 away
+
+    // Finalize object
+    objects.push(object)
   });
 
-  return shapes;
+  return objects;
 }
 
 let last = Date.now();
