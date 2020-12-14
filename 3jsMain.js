@@ -377,12 +377,12 @@ function apiToShape(jsonResponse) {
     switch (toneArr[i].tone_id) {
       case tone_ids[0]:
         shapesDict.emotion = tone_ids[0];
-        shapesDict.type = shapeNames[Math.random() * 2]; // can be cube[0] or diamond[1]
+        shapesDict.type = shapeNames[parseInt(Math.random() * 2)]; // can be cube[0] or diamond[1]
         shapesDict.color = RED;
         break;
       case tone_ids[1]:
         shapesDict.emotion = tone_ids[1];
-        shapesDict.type = shapeNames[(Math.random() * 2 + 2)]; // can be sphere[2] or cylinder[3]
+        shapesDict.type = shapeNames[parseInt(Math.random() * 2 + 2)]; // can be sphere[2] or cylinder[3]
         shapesDict.color = BLUE;
         break;
       case tone_ids[2]:
