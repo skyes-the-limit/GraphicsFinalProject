@@ -362,7 +362,6 @@ function apiToShape(jsonResponse) {
   let shapesDict = {};
   let shapeJSON = []
   let toneArr = jsonResponse.document_tone["tones"];
-  // random pick base shapes (from base 6), or skip diamond and torus due to bumpmaps
   // sphere and cylinder and cone for bumpmaps, none for objs
   // sphere-cylinder , cube-diamond, cone, torus
   let shapeNames = ["CUBE", "DIAMOND", "SPHERE", "CYLINDER", "CONE", "TORUS", "SPIRAL", "VORONOI", "CURVES"];
@@ -378,63 +377,79 @@ function apiToShape(jsonResponse) {
     switch (toneArr[i].tone_id) {
       case tone_ids[0]:
         shapesDict.emotion = tone_ids[0];
-        shapesDict.type = shapeNames[0];
+        shapesDict.type = shapeNames[Math.random()%2]; // can be cube[0] or diamond[1]
         shapesDict.color = RED;
         break;
       case tone_ids[1]:
         shapesDict.emotion = tone_ids[1];
-        shapesDict.type = shapeNames[1];
+        shapesDict.type = shapeNames[(Math.random()%2)+2]; // can be sphere[2] or cylinder[3]
         shapesDict.color = BLUE;
         break;
       case tone_ids[2]:
         shapesDict.emotion = tone_ids[2];
-        shapesDict.type = shapeNames[8];
+        shapesDict.type = shapeNames[4];
         shapesDict.color = PURPLE;
         break;
       case tone_ids[3]:
         shapesDict.emotion = tone_ids[3];
-        shapesDict.type = shapeNames[3];
+        shapesDict.type = shapeNames[5];
         shapesDict.color = PINK;
         break;
       case tone_ids[4]:
         shapesDict.emotion = tone_ids[4];
-        shapesDict.type = shapeNames[4];
+        shapesDict.type = shapeNames[6];
         shapesDict.color = GREEN;
         break;
       case tone_ids[5]:
         shapesDict.emotion = tone_ids[5];
-        shapesDict.type = shapeNames[5];
+        shapesDict.type = shapeNames[7];
         shapesDict.color = ORANGE;
         break;
       case tone_ids[6]:
         shapesDict.emotion = tone_ids[6];
-        shapesDict.type = shapeNames[6];
+        shapesDict.type = shapeNames[8];
         shapesDict.color = YELLOW;
         break;
       default:
         break;
     }
     shapesDict.power = toneArr[i].score;
-    if(shapesDict.power <= 0.5){
-      shapesDict.texture = "texture1"
-      shapesDict.bumpMap = "bmap1"
+    if (shapesDict.type===shapeNames[2] || shapesDict.type===shapeNames[3] || shapesDict.type===shapeNames[4]){
+      if(shapesDict.power <= 0.5){
+        shapesDict.bumpMap = "bmap1"
+      }
+      else{
+        shapesDict.bumpMap = "bmap2"
+      }
+      shapesDict.texture = "none"
     }
     else{
-      shapesDict.texture = "texture2"
-      shapesDict.bumpMap = "bmap2"
+      if(shapesDict.power <= 0.5){
+        shapesDict.texture = "texture1"
+      }
+      else{
+        shapesDict.texture = "texture2"
+      }
+      shapesDict.bumpMap = "none"
     }
-    //randomize 3-5 for base shapes and 0.3-0.5 for objs
+    //randomize 3-5 for base shapes and 0.03-0.05 for objs
     let size = toneArr[i].score ;
-    if (shapesDict.type === "SPIRAL" || shapesDict.type === "VORONOI" || shapesDict.type === "CURVES") {
-      size *= 0.01;
+    if (shapesDict.type === "SPIRAL") {
+      size *= 0.03;
+    }
+    else if(shapesDict.type === "VORONOI"){
+      size *= 0.04;
+    }
+    else if(shapesDict.type === "CURVES"){
+      size *= 0.05
+    }
+    else{
+      size *= (Math.random() * 3 + 3);
     }
     shapesDict.scale = {x: size, y: size, z: size};
     for(let j = 0.0; j <= 1.0; j+= 0.1){
       if(toneArr[i].score >= j){
-        for(let k = 0; k <= j; k++){
           shapeJSON.push(JSON.parse(JSON.stringify(shapesDict)));
-          break;
-        }
       }
     }
   }
