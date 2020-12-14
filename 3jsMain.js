@@ -340,9 +340,10 @@ async function onFormSubmit() {
         raycaster.setFromCamera(mouse3D, camera);
         const intersects = raycaster.intersectObjects(shapes);
         if (intersects.length > 0) {
-          // intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
+          intersects[0].object.rotateX(1.2);
           let emotionBox = document.getElementById("emotion");
-          emotionBox.innerHTML = `<h4>${intersects[0].object.emotion}</h4>`;
+          emotionBox.innerHTML = `<h3>This shape was created because you were feeling ${intersects[0].object.emotion}</h3>
+<h3>You're statements gave this an emotion a strength of ${intersects[0].object.power} out of 1</h3>`;
         }
       },
       false
@@ -423,7 +424,10 @@ function apiToShape(jsonResponse) {
       shapesDict.bumpMap = "bmap2"
     }
     //randomize 3-5 for base shapes and 0.3-0.5 for objs
-    const size = toneArr[i].score * 0.03
+    let size = toneArr[i].score ;
+    if (shapesDict.type === "SPIRAL" || shapesDict.type === "VORONOI" || shapesDict.type === "CURVES") {
+      size *= 0.01;
+    }
     shapesDict.scale = {x: size, y: size, z: size};
     for(let j = 0.0; j <= 1.0; j+= 0.1){
       if(toneArr[i].score >= j){
@@ -496,7 +500,7 @@ function createObjects(shapesList) {
             child.material.color.set(shape.color);
           }
         });
-      
+
       object.castShadow = true;
       object.receiveShadow = true;
 
@@ -587,16 +591,18 @@ function createObjects(shapesList) {
     });
 
     // Create 3js object
-    object = new THREE.Mesh(geometry, material);
+    let object = new THREE.Mesh(geometry, material);
     object.castShadow = true;
     object.receiveShadow = true;
     object.power = shape.power;
     object.emotion = shape.emotion;
     object.orbitDistance = Math.round(Math.random() * 20) + 10; // At least 10 but no more than 30 away
 
+    console.log("helo");
     shapes.push(object)
     scene.add(object)
   })
+  animate();
 }
 
 let last = Date.now();
