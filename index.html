@@ -11,30 +11,33 @@
 </head>
 
 <body>
-    <div>
-      <canvas id="canvas"></canvas>
-      <div id="controls">
-        <h4>W: Tilt camera up</h4>
-        <h4>A: Tilt camera down</h4>
-        <h4>S: Tilt camera left</h4>
-        <h4>D: Tilt camera right</h4>
-        <h4>Q: Rotate camera clockwise</h4>
-        <h4>E: Rotate camera counter-clockwise</h4>
-        <h4>SPACE: Reset camera</h4>
-        <h4>ESCAPE: Freeze camera mouse movement</h4>
-        <h4>P: Pause the animation</h4>
-        <h4>CLICK: View shape emotion</h4>
-      </div>
-      <div id="input">
-
-        <h1 id="inputTitle">How're you feeling today?</h1>
-        <p>I am feeling <i>emotion</i>, will give you the results for the emotion. </br> There are 7 emotions Anger, Fear, Joy, Sadness, Confident, Tentative, Analytical. </br> I am feeling fear is an example. Or input your own emotions and see what comes out!</p>
-        <textarea id="textArea" name="textArea"></textarea>
-      </div>
-      <div id="emotion">
-        <h4></h4>
-      </div>
+  <div>
+    <canvas id="canvas"></canvas>
+    <div id="controls">
+      <h4>W: Tilt camera up</h4>
+      <h4>A: Tilt camera down</h4>
+      <h4>S: Tilt camera left</h4>
+      <h4>D: Tilt camera right</h4>
+      <h4>Q: Rotate camera clockwise</h4>
+      <h4>E: Rotate camera counter-clockwise</h4>
+      <h4>SPACE: Reset camera</h4>
+      <h4>ESCAPE: Freeze camera mouse movement</h4>
+      <h4>P: Pause the animation</h4>
+      <h4>CLICK: View shape emotion</h4>
     </div>
+    <div id="input">
+      <div id="inputTitle">
+        <h1>How are you feeling today?</h1>
+        <p>I am feeling <i>emotion</i>, will give you the results for the emotion. </br> There are 7 emotions Anger,
+          Fear, Joy, Sadness, Confident, Tentative, Analytical. </br> I am feeling fear is an example. Or input your own
+          emotions and see what comes out!</p>
+      </div>
+      <textarea id="textArea" name="textArea"></textarea>
+    </div>
+    <div id="emotion">
+      <h4></h4>
+    </div>
+  </div>
 </body>
 
 </html>
@@ -59,7 +62,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: center; */
     justify-content: flex-start;
     margin: 5vh 5vw;
   }
@@ -99,5 +101,4 @@
     height: 100px;
     color: #FFFFFF;
   }
-
 </style>
