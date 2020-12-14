@@ -94,10 +94,6 @@ const main = () => {
   renderer.shadowMap.type = THREE.BasicShadowMap;
   renderer.outputEncoding = THREE.sRGBEncoding;
 
-  // Add test API objects to the scene
-  let shapes = createObjects(testInput);
-  shapes.forEach(object => scene.add(object))
-
   // define textures for reuse
   const bmap1 = new THREE.TextureLoader().load(
       './public/bumpMaps/cobbleBump.jpg');
@@ -357,8 +353,7 @@ async function onFormSubmit() {
 
   // Convert to rendered shapes
   const shapeJSON = apiToShape(jsonResponse);
-  const objects = createObjects(shapeJSON);
-  objects.forEach(object => scene.add(object))
+  createObjects(shapeJSON);
 }
 
 function apiToShape(jsonResponse) {
@@ -462,87 +457,130 @@ function createObjects(shapesList) {
       './public/textures/abstract1.png')
   const texture2 = new THREE.TextureLoader().load(
       './public/textures/abstract2.jpg')
+  const loader = new OBJLoader2Parallel();
 
   shapesList.forEach(shape => {
-  // Get the object type and size
-  let geometry = new THREE.Geometry() // Default will be an empty object
-  switch (shape.type) {
-    case "CUBE":
-      geometry = new THREE.BoxGeometry(shape.scale.x,
-        shape.scale.y, shape.scale.z, 4, 4, 4);
-      break;
-    case "CONE":
-      geometry = new THREE.ConeGeometry(shape.scale.x / 2,
-        shape.scale.y, 16, 4);
-      break;
-    case "CYLINDER":
-      geometry = new THREE.CylinderGeometry(shape.scale.x / 2,
-        shape.scale.x / 2, shape.scale.y, 16, 4);
-      break;
-    case "SPHERE":
-      geometry = new THREE.SphereGeometry(shape.scale.x / 2, 32, 32);
-      break;
-    case "DIAMOND":
-      geometry = new THREE.SphereGeometry(shape.scale.x / 2, 4, 2);
-      break;
-    case "TORUS":
-      geometry = new THREE.TorusGeometry(shape.scale.x / 2,
-        shape.scale.y / 2, 8, 50);
-      break;
-  }
+    // Handle object files first
+    let object = null;
+    switch (shape.type) {
+      case "SPIRAL":
+        loader.load('./public/obj/15736_Spiral_Twist_v1_NEW.obj', 
+          (root) => { 
+            root.scale.set(shape.scale.x, shape.scale.y, shape.scale.z);
+            root.position.set (Math.round(Math.random() * 40) - 20, // X between -20 and 20
+              Math.round(Math.random() * 40) - 20, // Y between -20 and 20
+              Math.round(Math.random() * -20) - 10  // Z between -30 and -10)
+            )
+            object = root; 
+          })
+        break;
+      case "VORONOI":
+          loader.load('./public/obj/Compressed_voronoi_sphere.obj', 
+            (root) => {
+              root.scale.set(shape.scale.x, shape.scale.y, shape.scale.z);
+              root.position.set (Math.round(Math.random() * 40) - 20, // X between -20 and 20
+                Math.round(Math.random() * 40) - 20, // Y between -20 and 20
+                Math.round(Math.random() * -20) - 10  // Z between -30 and -10)
+              )
+              object = root; 
+            })
+          break;
+     case "CURVES":
+        loader.load('./public/obj/Compressed_curves.obj', 
+          (root) => { 
+            root.scale.set(shape.scale.x, shape.scale.y, shape.scale.z);
+            root.position.set (Math.round(Math.random() * 40) - 20, // X between -20 and 20
+              Math.round(Math.random() * 40) - 20, // Y between -20 and 20
+              Math.round(Math.random() * -20) - 10  // Z between -30 and -10)
+            )
+            object = root; 
+          })
+        break;
+    };
 
-  // Set random position
-  geometry.translate (
-    Math.round(Math.random() * 40) - 20, // X between -20 and 20
-    Math.round(Math.random() * 40) - 20, // Y between -20 and 20
-    Math.round(Math.random() * -20) - 10  // Z between -30 and -10)
-  )
+    // If it was not an object file, generate new object
+    if (object == null) {
+      // Get the object type and size
+      let geometry;
+      switch (shape.type) {
+        case "CUBE":
+          geometry = new THREE.BoxGeometry(shape.scale.x,
+            shape.scale.y, shape.scale.z, 4, 4, 4);
+          break;
+        case "CONE":
+          geometry = new THREE.ConeGeometry(shape.scale.x / 2,
+            shape.scale.y, 16, 4);
+          break;
+        case "CYLINDER":
+          geometry = new THREE.CylinderGeometry(shape.scale.x / 2,
+            shape.scale.x / 2, shape.scale.y, 16, 4);
+          break;
+        case "SPHERE":
+          geometry = new THREE.SphereGeometry(shape.scale.x / 2, 32, 32);
+          break;
+        case "DIAMOND":
+          geometry = new THREE.SphereGeometry(shape.scale.x / 2, 4, 2);
+          break;
+        case "TORUS":
+          geometry = new THREE.TorusGeometry(shape.scale.x / 2,
+            shape.scale.y / 2, 8, 50);
+          break;
+      }
 
-  // Set bump map and texture maps as necessary
-  let objectBumpMap = null;
-  switch (shape.bumpMap) {
-    case "none":
-      break;
-    case "bmap1":
-      objectBumpMap = bmap1;
-      break;
-    case "bmap2":
-      objectBumpMap = bmap2;
-      break;
-  }
+      // Set random position
+      geometry.translate (
+        Math.round(Math.random() * 40) - 20, // X between -20 and 20
+        Math.round(Math.random() * 40) - 20, // Y between -20 and 20
+        Math.round(Math.random() * -20) - 10  // Z between -30 and -10)
+      )
 
-  let objectMap = null;
-  switch (shape.texture) {
-    case "none":
-      break;
-    case "texture1":
-      objectMap = texture1;
-      break;
-    case "texture2":
-      objectMap = texture2;
-      break;
-  }
+      // Set bump map and texture maps as necessary
+      let objectBumpMap = null;
+      switch (shape.bumpMap) {
+        case "none":
+          break;
+        case "bmap1":
+          objectBumpMap = bmap1;
+          break;
+        case "bmap2":
+          objectBumpMap = bmap2;
+          break;
+      }
 
-  const material = new THREE.MeshPhongMaterial({
-    color: shape.color,
-    map: objectMap,
-    bumpMap: objectBumpMap
+      let objectMap = null;
+      switch (shape.texture) {
+        case "none":
+          break;
+        case "texture1":
+          objectMap = texture1;
+          break;
+        case "texture2":
+          objectMap = texture2;
+          break;
+      }
+
+      const material = new THREE.MeshPhongMaterial({
+        color: shape.color,
+        map: objectMap,
+        bumpMap: objectBumpMap
+      });
+
+      // Create 3js object
+      object = new THREE.Mesh(geometry, material);
+    }
+  
+    object.castShadow = true;
+    object.receiveShadow = true;
+
+    // Assign additional properties for animation and selection
+    object.power = "0";
+    object.emotion = "neutral";
+    object.orbitDistance = Math.round(Math.random() * 20) + 10; // At least 10 but no more than 30 away
+
+    shapes.push(object)
   });
 
-  // Create 3js object
-  const object = new THREE.Mesh(geometry, material);
-  object.castShadow = true;
-  object.receiveShadow = true;
-
-  // Assign additional properties for animation and selection
-  object.emotion = "neutral";
-  object.orbitDistance = Math.round(Math.random() * 20) + 10; // At least 10 but no more than 30 away
-
-  // Finalize object
-  objects.push(object)
-  });
-
-  return objects;
+  shapes.forEach(object => scene.add(object))
 }
 
 let last = Date.now();
