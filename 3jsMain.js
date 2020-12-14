@@ -360,7 +360,10 @@ function apiToShape(jsonResponse) {
   let shapesDict = {};
   let shapeJSON = []
   let toneArr = jsonResponse.document_tone["tones"];
-  let shapeNames = ["CUBE", "SPHERE", "CYLINDER", "DIAMOND", "CONE", "TORUS"];
+  // random pick base shapes (from base 6), or skip diamond and torus due to bumpmaps
+  // sphere and cylinder and cone for bumpmaps, none for objs
+  // sphere-cylinder , cube-diamond, cone, torus
+  let shapeNames = ["CUBE", "DIAMOND", "SPHERE", "CYLINDER", "CONE", "TORUS", "SPIRAL", "VORONOI", "CURVES"];
   const RED = 0xCC0000;
   const BLUE = 0x3D85C6;
   const PURPLE = 0x674EA7;
@@ -372,44 +375,65 @@ function apiToShape(jsonResponse) {
   for (let i = 0; i < toneArr.length; i++) {
     switch (toneArr[i].tone_id) {
       case tone_ids[0]:
+        shapesDict.emotion = tone_ids[0];
         shapesDict.type = shapeNames[0];
         shapesDict.color = RED;
         break;
       case tone_ids[1]:
+        shapesDict.emotion = tone_ids[1];
         shapesDict.type = shapeNames[1];
         shapesDict.color = BLUE;
         break;
       case tone_ids[2]:
-        shapesDict.type = shapeNames[2];
+        shapesDict.emotion = tone_ids[2];
+        shapesDict.type = shapeNames[8];
         shapesDict.color = PURPLE;
         break;
       case tone_ids[3]:
+        shapesDict.emotion = tone_ids[3];
         shapesDict.type = shapeNames[3];
         shapesDict.color = PINK;
         break;
       case tone_ids[4]:
+        shapesDict.emotion = tone_ids[4];
         shapesDict.type = shapeNames[4];
         shapesDict.color = GREEN;
         break;
       case tone_ids[5]:
-        shapesDict.type = shapeNames[0];
+        shapesDict.emotion = tone_ids[5];
+        shapesDict.type = shapeNames[5];
         shapesDict.color = ORANGE;
         break;
       case tone_ids[6]:
-        shapesDict.type = shapeNames[5];
+        shapesDict.emotion = tone_ids[6];
+        shapesDict.type = shapeNames[6];
         shapesDict.color = YELLOW;
         break;
       default:
         break;
     }
-
+    shapesDict.power = toneArr[i].score;
+    if(shapesDict.power <= 0.5){
+      shapesDict.texture = "texture1"
+      shapesDict.bumpMap = "bmap1"
+    }
+    else{
+      shapesDict.texture = "texture2"
+      shapesDict.bumpMap = "bmap2"
+    }
+    //randomize 3-5 for base shapes and 0.3-0.5 for objs
     const size = toneArr[i].score * 5
     shapesDict.scale = {x: size, y: size, z: size};
-    shapesDict.texture = "none";
-    shapesDict.bumpMap = "none";
-    shapeJSON.push(JSON.parse(JSON.stringify(shapesDict)))
+    for(let j = 0.0; j <= 1.0; j+= 0.1){
+      if(toneArr[i].score >= j){
+        for(let k = 0; k <= j; k++){
+          shapeJSON.push(JSON.parse(JSON.stringify(shapesDict)));
+          break;
+        }
+      }
+    }
   }
- 
+ console.log(shapeJSON)
   return shapeJSON
 }
 
@@ -573,8 +597,8 @@ function createObjects(shapesList) {
     object.receiveShadow = true;
 
     // Assign additional properties for animation and selection
-    object.power = "0";
-    object.emotion = "neutral";
+    object.power = shape.power;
+    object.emotion = shape.emotion;
     object.orbitDistance = Math.round(Math.random() * 20) + 10; // At least 10 but no more than 30 away
 
     shapes.push(object)
