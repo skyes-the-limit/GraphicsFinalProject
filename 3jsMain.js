@@ -188,12 +188,20 @@ async function onFormSubmit() {
         0.5);
       const raycaster = new THREE.Raycaster();
       raycaster.setFromCamera(mouse3D, camera);
-      const intersects = raycaster.intersectObjects(shapes);
+      const intersects = raycaster.intersectObjects(scene.children, true);
       if (intersects.length > 0) {
-        intersects[0].object.rotateX(1.2);
-        let emotionBox = document.getElementById("emotion");
-        emotionBox.innerHTML = `<h3>This shape was created because you were feeling ${intersects[0].object.emotion}.</h3>
+        console.log(intersects[0])
+        if (intersects[0].object.emotion || intersects[0].object.parent.emotion) {
+          intersects[0].object.rotateX(1.2);
+          let emotionBox = document.getElementById("emotion");
+          if (intersects[0].object.emotion) {
+            emotionBox.innerHTML = `<h3>This shape was created because you were feeling ${intersects[0].object.emotion}.</h3>
           <h3>Your statements gave this emotion a strength of ${intersects[0].object.power} out of 1.</h3>`;
+          } else if (intersects[0].object.parent.emotion) {
+            emotionBox.innerHTML = `<h3>This shape was created because you were feeling ${intersects[0].object.parent.emotion}.</h3>
+          <h3>Your statements gave this emotion a strength of ${intersects[0].object.parent.power} out of 1.</h3>`
+          }
+        }
       }
     },
     false
